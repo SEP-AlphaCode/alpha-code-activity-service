@@ -38,8 +38,8 @@ public class Dance {
     @Column(name = "duration", nullable = false)
     private Integer duration;
 
-    @Size(max = 255)
-    @Column(name = "description")
+    @Lob
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @Size(max = 100)
@@ -57,6 +57,9 @@ public class Dance {
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
+
+    @Column(name = "robot_model_id")
+    private UUID robotModelId;
 
     //Relationship
     @OneToMany(mappedBy = "dance", fetch = FetchType.LAZY)

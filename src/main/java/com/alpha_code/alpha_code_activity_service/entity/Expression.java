@@ -54,6 +54,9 @@ public class Expression {
     @Column(name = "status", nullable = false)
     private Integer status;
 
+    @Column(name = "robot_model_id")
+    private UUID robotModelId;
+
     //Relationship
     @OneToMany(mappedBy = "expression", fetch = FetchType.LAZY)
     private List<OsmoCard> osmoCards;

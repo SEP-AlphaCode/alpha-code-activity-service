@@ -36,9 +36,9 @@ public class Activity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(max = 255)
     @NotNull
-    @Column(name = "description", nullable = false)
+    @Lob
+    @Column(name = "description", nullable = false, columnDefinition = "text")
     private String description;
 
     @NotNull
@@ -62,14 +62,10 @@ public class Activity {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @Column(name = "music_id")
-    private UUID musicId;
+    @Column(name = "account_id", nullable = false)
+    private UUID accountId;
 
     //Relationship
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "music_id", insertable = false, updatable = false)
-    private Music music;
-
     @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY)
     private List<QrCode> qrCodes;
 

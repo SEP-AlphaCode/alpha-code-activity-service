@@ -29,15 +29,13 @@ public class Action {
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "uuid")
     private UUID id;
 
-
-
     @Size(max = 255)
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(max = 255)
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
+    @Lob
     private String description;
 
     @Size(max = 100)
@@ -63,6 +61,9 @@ public class Action {
     @NotNull
     @Column(name = "status", nullable = false)
     private Integer status;
+
+    @Column(name = "robot_model_id", nullable = false)
+    private UUID robotModelId;
 
     //Relationship
     @OneToMany(mappedBy = "action", fetch = FetchType.LAZY)
