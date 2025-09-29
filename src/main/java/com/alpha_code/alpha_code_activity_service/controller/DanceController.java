@@ -27,10 +27,9 @@ public class DanceController {
                                         @RequestParam(value = "size", defaultValue = "10") int size,
                                         @RequestParam(value = "name", required = false) String name,
                                         @RequestParam(value = "code", required = false) String code,
-                                        @RequestParam(value = "description", required = false) String description,
                                         @RequestParam(value = "status", required = false) Integer status,
                                         @RequestParam(value = "robotModelId", required = false) UUID robotModelId){
-        return service.getAll(page, size, name, code, description, status, robotModelId);
+        return service.getAll(page, size, name, code, status, robotModelId);
     }
 
     @GetMapping("/{id}")

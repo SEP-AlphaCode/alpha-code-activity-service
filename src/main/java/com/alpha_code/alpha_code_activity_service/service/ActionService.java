@@ -10,7 +10,6 @@ public interface ActionService {
     PagedResult<ActionDto> searchActions(int page, int size,
                                          String name,
                                          String code,
-                                         String description,
                                          Integer status,
                                          Boolean canInterrupt,
                                          Integer duration);

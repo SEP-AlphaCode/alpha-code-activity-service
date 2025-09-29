@@ -27,10 +27,10 @@ public class ActionServiceImpl implements ActionService {
     private final ActionRepository actionRepository;
 
     @Override
-    @Cacheable(value = "actions_list", key = "{#page, #size, #name, #code, #description, #status, #canInterrupt, #duration}")
-    public PagedResult<ActionDto> searchActions(int page, int size, String name, String code, String description, Integer status, Boolean canInterrupt, Integer duration) {
+    @Cacheable(value = "actions_list", key = "{#page, #size, #name, #code, #status, #canInterrupt, #duration}")
+    public PagedResult<ActionDto> searchActions(int page, int size, String name, String code, Integer status, Boolean canInterrupt, Integer duration) {
         Pageable pageable = PageRequest.of(page - 1,size);
-        Page<Action> actions = actionRepository.searchActions(name, code, description, status, canInterrupt, duration, pageable);
+        Page<Action> actions = actionRepository.searchActions(name, code, status, canInterrupt, duration, pageable);
 
         return new PagedResult<>(actions.map(ActionMapper::toDto));
     }

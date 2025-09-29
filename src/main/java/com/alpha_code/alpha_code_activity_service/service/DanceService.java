@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface DanceService {
-    PagedResult<DanceDto> getAll(int page, int size, String name, String code, String description, Integer status, UUID robotModelId);
+    PagedResult<DanceDto> getAll(int page, int size, String name, String code, Integer status, UUID robotModelId);
 
     DanceDto getById(UUID id);
 

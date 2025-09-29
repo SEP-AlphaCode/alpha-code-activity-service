@@ -28,12 +28,12 @@ public class DanceServiceImpl implements DanceService {
     private final DanceRepository repository;
 
     @Override
-    @Cacheable(value = "dances_list", key = "{#page, #size, #name, #code, #description, #status, #robotModelId}")
-    public PagedResult<DanceDto> getAll(int page, int size, String name, String code, String description, Integer status, UUID robotModelId) {
+    @Cacheable(value = "dances_list", key = "{#page, #size, #name, #code, #status, #robotModelId}")
+    public PagedResult<DanceDto> getAll(int page, int size, String name, String code, Integer status, UUID robotModelId) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Dance> pageResult;
 
-        pageResult = repository.searchDances(name, code, description, status, robotModelId, pageable);
+        pageResult = repository.searchDances(name, code, status, robotModelId, pageable);
 
         return new PagedResult<>(pageResult.map(DanceMapper::toDto));
     }

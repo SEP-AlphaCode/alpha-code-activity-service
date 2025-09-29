@@ -19,7 +19,6 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
         SELECT a 
         FROM Activity a
         WHERE (:keyword IS NULL OR :keyword = '' OR LOWER(a.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-               OR LOWER(a.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
                OR LOWER(a.type) LIKE LOWER(CONCAT('%', :keyword, '%')))
           AND (:accountId IS NULL OR a.accountId = :accountId)
           AND (:status IS NULL OR a.status = :status)

@@ -1,6 +1,6 @@
 package com.alpha_code.alpha_code_activity_service.config;
 
-import com.alpha_code.alpha_code_robot_service.filter.JwtAuthenticationFilter;
+import com.alpha_code.alpha_code_activity_service.filter.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

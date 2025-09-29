@@ -19,7 +19,6 @@ public interface ActionRepository extends JpaRepository<Action, UUID> {
                 FROM Action a
                 WHERE (:name IS NULL OR :name = '' OR LOWER(a.name) LIKE LOWER(CONCAT('%', :name, '%')))
                   AND (:code IS NULL OR :code = '' OR LOWER(a.code) LIKE LOWER(CONCAT('%', :code, '%')))
-                  AND (:description IS NULL OR :description = '' OR LOWER(a.description) LIKE LOWER(CONCAT('%', :description, '%')))
                   AND (:status IS NULL OR a.status = :status)
                   AND (:status <> 0)
                   AND (:canInterrupt IS NULL OR a.canInterrupt = :canInterrupt)
@@ -28,7 +27,6 @@ public interface ActionRepository extends JpaRepository<Action, UUID> {
     Page<Action> searchActions(
             @Param("name") String name,
             @Param("code") String code,
-            @Param("description") String description,
             @Param("status") Integer status,
             @Param("canInterrupt") Boolean canInterrupt,
             @Param("duration") Integer duration,

@@ -26,11 +26,10 @@ public class ActionController {
                                          @RequestParam(value = "size", defaultValue = "10") int size,
                                          @RequestParam(value = "name", required = false) String name,
                                          @RequestParam(value = "code", required = false) String code,
-                                         @RequestParam(value = "description", required = false) String description,
                                          @RequestParam(value = "status", required = false) Integer status,
                                          @RequestParam(value = "canInterrupt", required = false) Boolean canInterrupt,
                                          @RequestParam(value = "duration", required = false) Integer duration) {
-        return service.searchActions(page, size, name, code, description, status, canInterrupt, duration);
+        return service.searchActions(page, size, name, code, status, canInterrupt, duration);
     }
 
     @GetMapping("/{id}")

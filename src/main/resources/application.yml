@@ -3,13 +3,13 @@ open:
     title: Alpha Mini API
     version: 1.0.0
     description: SEP project with AlphaMini API
-    serverUrl: ${OPEN_API_SERVERURL:http://localhost:8081}
+    serverUrl: ${OPEN_API_SERVERURL:http://localhost:8084}
 
 springdoc:
   writer-with-order-by-keys: true
   api-docs:
     server:
-      url: ${OPEN_API_SERVERURL:http://localhost:8081}
+      url: ${OPEN_API_SERVERURL:http://localhost:8084}
   swagger-ui:
     path: /swagger
     tags-sorter: alpha
@@ -33,6 +33,13 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  application:
+    name: activity-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 
 server:
   forward-headers-strategy: native
