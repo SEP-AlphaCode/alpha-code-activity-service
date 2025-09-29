@@ -36,7 +36,7 @@ public class Dance {
 
     @NotNull
     @Column(name = "duration", nullable = false)
-    private Integer duration;
+    private Double duration;
 
     @Lob
     @Column(name = "description", columnDefinition = "text")

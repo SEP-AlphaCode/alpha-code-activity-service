@@ -27,6 +27,7 @@ public class ActionServiceImpl implements ActionService {
     private final ActionRepository actionRepository;
 
     @Override
+    @Cacheable(value = "actions_list", key = "{#page, #size, #name, #code, #description, #status, #canInterrupt, #duration}")
     public PagedResult<ActionDto> searchActions(int page, int size, String name, String code, String description, Integer status, Boolean canInterrupt, Integer duration) {
         Pageable pageable = PageRequest.of(page - 1,size);
         Page<Action> actions = actionRepository.searchActions(name, code, description, status, canInterrupt, duration, pageable);
@@ -44,22 +45,25 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
+    @Cacheable(value = "actions", key = "#name")
     public ActionDto getActionByName(String name) {
-        Action action = actionRepository.findByNameIgnoreCase(name)
+        Action action = actionRepository.findByNameIgnoreCaseAndStatusNot(name, 0)
                 .orElseThrow(() -> new ResourceNotFoundException("Action not found with name: " + name));
         return ActionMapper.toDto(action);
     }
 
     @Override
+    @Cacheable(value = "actions", key = "#code")
     public ActionDto getActionByCode(String code) {
-        Action action = actionRepository.findByCodeIgnoreCase(code)
+        Action action = actionRepository.findByCodeIgnoreCaseAndStatusNot(code, 0)
                 .orElseThrow(() -> new ResourceNotFoundException("Action not found with code: " + code));
         return ActionMapper.toDto(action);
     }
 
     @Override
+    @Cacheable(value = "actions", key = "#robotModelId")
     public ActionDto getActionByRobotModelId(UUID robotModelId) {
-        Action action = actionRepository.findByRobotModelId(robotModelId)
+        Action action = actionRepository.findByRobotModelIdAndStatusNot(robotModelId, 0)
                 .orElseThrow(() -> new ResourceNotFoundException("Action not found with robot model id: " + robotModelId));
         return ActionMapper.toDto(action);
     }
@@ -69,12 +73,12 @@ public class ActionServiceImpl implements ActionService {
     @CacheEvict(value = {"actions_list"}, allEntries = true)
     public ActionDto createAction(ActionDto actionDto) {
 
-        var existed = actionRepository.findByCodeIgnoreCase(actionDto.getName());
+        var existed = actionRepository.findByCodeIgnoreCaseAndStatusNot(actionDto.getName(), 0);
         if (existed.isPresent()) {
             throw new ResourceNotFoundException("Action already exists with name: " + actionDto.getName());
         }
 
-        existed = actionRepository.findByNameIgnoreCase(actionDto.getName());
+        existed = actionRepository.findByNameIgnoreCaseAndStatusNot(actionDto.getName(), 0);
         if (existed.isPresent()) {
             throw new ResourceNotFoundException("Action already exists with name: " + actionDto.getName());
         }
@@ -107,6 +111,9 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
+    @Transactional
+    @CachePut(value = "actions", key = "#id")
+    @CacheEvict(value = {"actions_list"}, allEntries = true)
     public ActionDto patchUpdateAction(UUID id, ActionDto actionDto) {
         Action existingAction = actionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Action not found with id: " + id));

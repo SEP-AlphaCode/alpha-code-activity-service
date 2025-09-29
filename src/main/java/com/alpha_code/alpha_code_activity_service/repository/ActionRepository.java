@@ -35,9 +35,9 @@ public interface ActionRepository extends JpaRepository<Action, UUID> {
             Pageable pageable
     );
 
-    Optional<Action> findByCodeIgnoreCase(String code);
+    Optional<Action> findByCodeIgnoreCaseAndStatusNot(String code, Integer status);
 
-    Optional<Action> findByNameIgnoreCase(String name);
+    Optional<Action> findByNameIgnoreCaseAndStatusNot(String name, Integer status);
 
-    Optional<Action> findByRobotModelId(UUID robotModelId);
+    Optional<Action> findByRobotModelIdAndStatusNot(UUID robotModelId, Integer status);
 }

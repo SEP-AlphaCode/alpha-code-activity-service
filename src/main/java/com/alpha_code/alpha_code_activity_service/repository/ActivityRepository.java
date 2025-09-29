@@ -32,9 +32,9 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
             Pageable pageable
     );
 
-    Optional<Activity> findByNameIgnoreCase(String name);
+    Optional<Activity> findByNameIgnoreCaseAndStatusNot(String name, Integer status);
 
-    List<Activity> findAllByType(String type);
+    List<Activity> findAllByTypeIgnoreCaseAndStatusNot(String type, Integer status);
 
     List<Activity> findAllByAccountIdAndStatusNot(UUID accountId, Integer status);
 }
