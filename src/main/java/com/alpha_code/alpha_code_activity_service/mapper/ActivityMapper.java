@@ -12,7 +12,6 @@ public class ActivityMapper {
         ActivityDto activityDto = new ActivityDto();
         activityDto.setId(activity.getId());
         activityDto.setName(activity.getName());
-        activityDto.setDescription(activity.getDescription());
         activityDto.setData(activity.getData());
         activityDto.setType(activity.getType());
         activityDto.setCreatedDate(activity.getCreatedDate());
@@ -30,7 +29,6 @@ public class ActivityMapper {
         Activity activity = new Activity();
         activity.setId(dto.getId());
         activity.setName(dto.getName());
-        activity.setDescription(dto.getDescription());
         activity.setData(dto.getData());
         activity.setType(dto.getType());
         activity.setCreatedDate(dto.getCreatedDate());

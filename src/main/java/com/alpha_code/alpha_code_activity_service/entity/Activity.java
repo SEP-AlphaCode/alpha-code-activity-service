@@ -37,11 +37,6 @@ public class Activity {
     private String name;
 
     @NotNull
-    @Lob
-    @Column(name = "description", nullable = false, columnDefinition = "text")
-    private String description;
-
-    @NotNull
     @Type(JsonType.class)
     @Column(name = "data", nullable = false, columnDefinition = "jsonb")
     private JsonNode data;

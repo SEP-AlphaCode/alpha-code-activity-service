@@ -91,7 +91,6 @@ public class ActivityServiceImpl implements ActivityService {
         }
 
         activity.setName(dto.getName());
-        activity.setDescription(dto.getDescription());
         activity.setData(dto.getData());
         activity.setType(dto.getType());
         activity.setStatus(dto.getStatus());
@@ -117,9 +116,6 @@ public class ActivityServiceImpl implements ActivityService {
 
         if (dto.getName() != null) {
             activity.setName(dto.getName());
-        }
-        if (dto.getDescription() != null) {
-            activity.setDescription(dto.getDescription());
         }
         if (dto.getData() != null) {
             activity.setData(dto.getData());

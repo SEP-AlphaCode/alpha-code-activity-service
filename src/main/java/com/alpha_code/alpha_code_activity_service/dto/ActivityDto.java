@@ -30,8 +30,6 @@ public class ActivityDto implements Serializable {
     @NotNull(message = "Name is required", groups = {OnCreate.class})
     private String name;
 
-    private String description;
-
     @NotNull(message = "Data is required", groups = {OnCreate.class})
     private JsonNode data;
 
