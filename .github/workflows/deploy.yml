@@ -26,8 +26,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: norman1910/alpha-code-user-service:latest
-          cache-from: type=registry,ref=norman1910/alpha-code-user-service:latest
+          tags: norman1910/alpha-code-activity-service:latest
+          cache-from: type=registry,ref=norman1910/alpha-code-activity-service:latest
           cache-to: type=inline
 
   deploy:
