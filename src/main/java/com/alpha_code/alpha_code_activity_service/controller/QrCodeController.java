@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/Qr-codes")
+@RequestMapping("/api/v1/qr-codes")
 @RequiredArgsConstructor
 @Tag(name = "QrCodes")
 public class QrCodeController {
