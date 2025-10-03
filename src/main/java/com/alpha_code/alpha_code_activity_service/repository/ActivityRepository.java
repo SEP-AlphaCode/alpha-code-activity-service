@@ -22,7 +22,7 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
                OR LOWER(a.type) LIKE LOWER(CONCAT('%', :keyword, '%')))
           AND (:accountId IS NULL OR a.accountId = :accountId)
           AND (:status IS NULL OR a.status = :status)
-          AND (:status <> 0)
+          AND (a.status <> 0)
     """)
     Page<Activity> searchActivities(
             @Param("keyword") String keyword,
