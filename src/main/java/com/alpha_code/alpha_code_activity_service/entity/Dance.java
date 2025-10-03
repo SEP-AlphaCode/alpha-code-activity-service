@@ -38,7 +38,6 @@ public class Dance {
     @Column(name = "duration", nullable = false)
     private Double duration;
 
-    @Lob
     @Column(name = "description", columnDefinition = "text")
     private String description;
 

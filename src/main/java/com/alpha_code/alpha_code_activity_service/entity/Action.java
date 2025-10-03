@@ -35,7 +35,6 @@ public class Action {
     private String name;
 
     @Column(name = "description", columnDefinition = "text")
-    @Lob
     private String description;
 
     @Size(max = 100)
