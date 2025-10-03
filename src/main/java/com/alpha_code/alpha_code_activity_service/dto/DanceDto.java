@@ -46,7 +46,6 @@ public class DanceDto implements Serializable {
     @NotNull(message = "Icon is required", groups = {OnCreate.class})
     private String icon;
 
-
     @NotNull(message = "Robot model id is required", groups = {OnCreate.class})
     private UUID robotModelId;
 
