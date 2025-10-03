@@ -20,7 +20,7 @@ public interface DanceRepository extends JpaRepository<Dance, UUID> {
             WHERE (:name IS NULL OR :name = '' OR LOWER(d.name) LIKE LOWER(CONCAT('%', :name, '%')))
             AND (:code IS NULL OR :code = '' OR LOWER(d.code) LIKE LOWER(CONCAT('%', :code, '%')))
             AND (:status IS NULL OR d.status = :status)
-            AND (:status <> 0)
+            AND (d.status <> 0)
             AND (:robotModelId IS NULL OR d.robotModelId = :robotModelId)
             """)
     Page<Dance> searchDances(

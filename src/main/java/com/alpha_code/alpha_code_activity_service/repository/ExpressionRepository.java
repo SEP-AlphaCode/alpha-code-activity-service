@@ -21,7 +21,7 @@ public interface ExpressionRepository extends JpaRepository<Expression, UUID> {
             WHERE (:name IS NULL or :name = '' or LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%')))
             AND (:code IS NULL or :code = '' or LOWER(e.code) LIKE LOWER(CONCAT('%', :code, '%')))
             AND (:status IS NULL or e.status = :status)
-            AND (:status <> 0)
+            AND (e.status <> 0)
             AND (:robotModelId IS NULL or e.robotModelId = :robotModelId)
             """)
     Page<Expression> getAll(@Param("name") String name,
