@@ -3,6 +3,7 @@ package com.alpha_code.alpha_code_activity_service.service.impl;
 import com.alpha_code.alpha_code_activity_service.dto.ActivityDto;
 import com.alpha_code.alpha_code_activity_service.dto.PagedResult;
 import com.alpha_code.alpha_code_activity_service.entity.Activity;
+import com.alpha_code.alpha_code_activity_service.exception.ConflictException;
 import com.alpha_code.alpha_code_activity_service.exception.ResourceNotFoundException;
 import com.alpha_code.alpha_code_activity_service.mapper.ActivityMapper;
 import com.alpha_code.alpha_code_activity_service.repository.ActivityRepository;
@@ -65,11 +66,12 @@ public class ActivityServiceImpl implements ActivityService {
     @CacheEvict(value = "activities_list", allEntries = true)
     public ActivityDto createActivity(ActivityDto dto) {
 
-        var existed = repository.findByNameIgnoreCaseAndStatusNot(dto.getName(), 0)
-                .orElseThrow(() -> new RuntimeException("Activity already exists with name: " + dto.getName()));
+        var existed = repository.findByNameIgnoreCaseAndStatusNot(dto.getName(), 0);
 
-
-
+        if(existed.isPresent()){
+            throw new ConflictException("Activity already exists with name: " + dto.getName());
+        }
+        
         var activity = ActivityMapper.toEntity(dto);
         activity.setCreatedDate(LocalDateTime.now());
 
@@ -95,6 +97,7 @@ public class ActivityServiceImpl implements ActivityService {
         activity.setType(dto.getType());
         activity.setStatus(dto.getStatus());
         activity.setAccountId(dto.getAccountId());
+        activity.setRobotModelId(dto.getRobotModelId());
         activity.setLastUpdated(LocalDateTime.now());
 
         Activity savedActivity = repository.save(activity);
@@ -128,6 +131,10 @@ public class ActivityServiceImpl implements ActivityService {
         }
         if (dto.getAccountId() != null) {
             activity.setAccountId(dto.getAccountId());
+        }
+
+        if(dto.getRobotModelId() != null) {
+            activity.setRobotModelId(dto.getRobotModelId());
         }
 
         activity.setLastUpdated(LocalDateTime.now());

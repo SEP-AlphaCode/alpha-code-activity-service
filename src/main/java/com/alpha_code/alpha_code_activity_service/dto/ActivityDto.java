@@ -47,6 +47,9 @@ public class ActivityDto implements Serializable {
     @NotNull(message = "Account id is required", groups = {OnCreate.class})
     private UUID accountId;
 
+    @NotNull(message = "Robot model id is required", groups = {OnCreate.class})
+    private UUID robotModelId;
+
     @JsonProperty(value = "statusText", access = JsonProperty.Access.READ_ONLY)
     public String getStatusText() {
         return ActionEnum.fromCode(this.status);

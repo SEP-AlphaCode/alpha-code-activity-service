@@ -21,6 +21,7 @@ public class ActionMapper {
         actionDto.setDuration(action.getDuration());
         actionDto.setStatus(action.getStatus());
         actionDto.setCanInterrupt(action.getCanInterrupt());
+        actionDto.setIcon(action.getIcon());
         actionDto.setRobotModelId(action.getRobotModelId());
         return actionDto;
 
@@ -41,6 +42,7 @@ public class ActionMapper {
         action.setDuration(dto.getDuration());
         action.setStatus(dto.getStatus());
         action.setCanInterrupt(dto.getCanInterrupt());
+        action.setIcon(dto.getIcon());
         action.setRobotModelId(dto.getRobotModelId());
         return action;
     }

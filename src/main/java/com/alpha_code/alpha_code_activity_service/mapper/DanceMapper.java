@@ -18,6 +18,7 @@ public class DanceMapper {
         danceDto.setStatus(dance.getStatus());
         danceDto.setCreatedDate(dance.getCreatedDate());
         danceDto.setLastUpdated(dance.getLastUpdated());
+        danceDto.setIcon(dance.getIcon());
         danceDto.setRobotModelId(dance.getRobotModelId());
         return danceDto;
     }
@@ -36,6 +37,7 @@ public class DanceMapper {
         dance.setStatus(dto.getStatus());
         dance.setCreatedDate(dto.getCreatedDate());
         dance.setLastUpdated(dto.getLastUpdated());
+        dance.setIcon(dto.getIcon());
         dance.setRobotModelId(dto.getRobotModelId());
         return dance;
     }

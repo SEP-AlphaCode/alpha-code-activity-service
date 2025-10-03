@@ -17,6 +17,7 @@ public class ActivityMapper {
         activityDto.setCreatedDate(activity.getCreatedDate());
         activityDto.setLastUpdated(activity.getLastUpdated());
         activityDto.setStatus(activity.getStatus());
+        activityDto.setRobotModelId(activity.getRobotModelId());
         activityDto.setAccountId(activity.getAccountId());
         return activityDto;
     }
@@ -34,6 +35,7 @@ public class ActivityMapper {
         activity.setCreatedDate(dto.getCreatedDate());
         activity.setLastUpdated(dto.getLastUpdated());
         activity.setStatus(dto.getStatus());
+        activity.setRobotModelId(dto.getRobotModelId());
         activity.setAccountId(dto.getAccountId());
         return activity;
     }

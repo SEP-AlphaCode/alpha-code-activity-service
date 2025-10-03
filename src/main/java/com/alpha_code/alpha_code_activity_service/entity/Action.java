@@ -65,6 +65,10 @@ public class Action {
     @Column(name = "robot_model_id", nullable = false)
     private UUID robotModelId;
 
+    @NotNull
+    @Column(name = "icon", nullable = false)
+    private String icon;
+
     //Relationship
     @OneToMany(mappedBy = "action", fetch = FetchType.LAZY)
     private List<OsmoCard> osmoCards;

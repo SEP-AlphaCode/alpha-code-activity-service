@@ -58,8 +58,12 @@ public class Dance {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    @Column(name = "robot_model_id")
+    @Column(name = "robot_model_id", nullable = false)
     private UUID robotModelId;
+
+    @NotNull
+    @Column(name = "icon", nullable = false)
+    private String icon;
 
     //Relationship
     @OneToMany(mappedBy = "dance", fetch = FetchType.LAZY)
