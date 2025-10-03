@@ -43,6 +43,10 @@ public class DanceDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime lastUpdated;
 
+    @NotNull(message = "Icon is required", groups = {OnCreate.class})
+    private String icon;
+
+
     @NotNull(message = "Robot model id is required", groups = {OnCreate.class})
     private UUID robotModelId;
 

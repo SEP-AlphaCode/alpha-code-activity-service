@@ -95,6 +95,7 @@ public class ActivityServiceImpl implements ActivityService {
         activity.setType(dto.getType());
         activity.setStatus(dto.getStatus());
         activity.setAccountId(dto.getAccountId());
+        activity.setRobotModelId(dto.getRobotModelId());
         activity.setLastUpdated(LocalDateTime.now());
 
         Activity savedActivity = repository.save(activity);
@@ -128,6 +129,10 @@ public class ActivityServiceImpl implements ActivityService {
         }
         if (dto.getAccountId() != null) {
             activity.setAccountId(dto.getAccountId());
+        }
+
+        if(dto.getRobotModelId() != null) {
+            activity.setRobotModelId(dto.getRobotModelId());
         }
 
         activity.setLastUpdated(LocalDateTime.now());

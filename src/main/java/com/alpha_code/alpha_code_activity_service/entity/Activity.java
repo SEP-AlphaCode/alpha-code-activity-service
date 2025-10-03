@@ -60,6 +60,9 @@ public class Activity {
     @Column(name = "account_id", nullable = false)
     private UUID accountId;
 
+    @Column(name = "robot_model_id", nullable = false)
+    private UUID robotModelId;
+
     //Relationship
     @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY)
     private List<QrCode> qrCodes;

@@ -41,6 +41,9 @@ public class ActionDto implements Serializable {
     @Positive(message = "Duration must be positive")
     private Integer duration;
 
+    @NotNull(message = "Icon is required", groups = {OnCreate.class})
+    private String icon;
+
     @NotNull(message = "Status is required", groups = {OnCreate.class})
     private Integer status;
 
