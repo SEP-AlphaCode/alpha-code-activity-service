@@ -14,6 +14,7 @@ public class SecurityWhitelist {
             "/docs",
             "/",
             "/api/v1/auth/**",
+            "/api/v1/qr-codes/by-image",
     };
 
     // Permit GET only
