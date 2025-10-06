@@ -18,6 +18,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,6 +38,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QrCodeServiceImpl implements QrCodeService {
 
     private final QrCodeRepository repository;
@@ -89,6 +91,8 @@ public class QrCodeServiceImpl implements QrCodeService {
             if (decodedText == null || decodedText.isBlank()) {
                 throw new IllegalArgumentException("Không tìm thấy nội dung QR code trong ảnh");
             }
+
+            log.info("Decoded QR code text: {}", decodedText);
 
             // Dùng lại logic getByCode
             QrCodeDto qrCodeDto = getByCode(decodedText);
