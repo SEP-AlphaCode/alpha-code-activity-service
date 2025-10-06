@@ -12,10 +12,8 @@ import com.alpha_code.alpha_code_activity_service.service.QrCodeService;
 import com.alpha_code.alpha_code_activity_service.service.S3Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.*;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +32,13 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+
+import boofcv.abst.fiducial.QrCodeDetector;
+import boofcv.factory.fiducial.FactoryFiducial;
+import boofcv.io.image.ConvertBufferedImage;
+import boofcv.struct.image.GrayU8;
 
 @Service
 @RequiredArgsConstructor
@@ -81,34 +85,42 @@ public class QrCodeServiceImpl implements QrCodeService {
                 throw new IllegalArgumentException("File ảnh không hợp lệ hoặc không thể đọc");
             }
 
-            // Decode QR code bằng ZXing
-            LuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
-            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            // Chuyển BufferedImage sang ảnh grayscale GrayU8 của BoofCV
+            GrayU8 gray = ConvertBufferedImage.convertFrom(bufferedImage, (GrayU8) null);
 
-            Result result = new MultiFormatReader().decode(bitmap);
+            // Tạo QR code detector
+            QrCodeDetector<GrayU8> detector = FactoryFiducial.qrcode(null, GrayU8.class);
 
-            String decodedText = result.getText();
+            // Phát hiện QR code
+            detector.process(gray);
+
+            List<boofcv.alg.fiducial.qrcode.QrCode> detections = detector.getDetections();
+
+            if (detections.isEmpty()) {
+                throw new ResourceNotFoundException("Không tìm thấy QR code trong ảnh (mờ, nghiêng, background...)");
+            }
+
+            // Lấy QR code đầu tiên
+            String decodedText = detections.get(0).message;
             if (decodedText == null || decodedText.isBlank()) {
                 throw new IllegalArgumentException("Không tìm thấy nội dung QR code trong ảnh");
             }
 
             log.info("Decoded QR code text: {}", decodedText);
 
-            // Dùng lại logic getByCode
+            // Lấy thông tin từ DB
             QrCodeDto qrCodeDto = getByCode(decodedText);
-
             if (qrCodeDto == null) throw new ResourceNotFoundException("QR code không tồn tại");
 
             ActivityDto activityDto = activityService.getActivityById(qrCodeDto.getActivityId());
-
             if (activityDto == null) throw new ResourceNotFoundException("Activity không tồn tại");
 
             return activityDto;
 
-        } catch (NotFoundException e) {
-            throw new ResourceNotFoundException("Không tìm thấy QR code trong ảnh");
         } catch (IOException e) {
             throw new RuntimeException("Lỗi khi đọc file ảnh QR code", e);
+        } catch (ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi decode QR code", e);
         }
