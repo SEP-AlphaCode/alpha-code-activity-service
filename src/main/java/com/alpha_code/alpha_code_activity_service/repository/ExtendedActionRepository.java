@@ -23,9 +23,8 @@ public interface  ExtendedActionRepository extends JpaRepository<ExtendedAction,
        SELECT ea FROM ExtendedAction ea
        WHERE :searchTerm IS NULL OR 
              LOWER(ea.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(ea.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             CAST(ea.status AS string) LIKE CONCAT('%', :searchTerm, '%')
-       ORDER BY ea.name
+             LOWER(ea.code) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+       ORDER BY  ea.createdDate DESC 
        """)
     Page<ExtendedAction> searchExtendedActions(@Param("searchTerm") String searchTerm, Pageable pageable);
 
