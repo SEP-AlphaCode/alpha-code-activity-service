@@ -31,6 +31,17 @@ public class OsmoCardMapper {
             dto.setDanceName(osmoCard.getDance().getName());
             dto.setDanceCode(osmoCard.getDance().getCode());
         }
+        dto.setSkillId(osmoCard.getSkillId());
+        if (osmoCard.getSkill() != null) {
+            dto.setSkillName(osmoCard.getSkill().getName());
+            dto.setSkillCode(osmoCard.getSkill().getCode());
+        }
+
+        dto.setExtendedActionId(osmoCard.getExtendedActionId());
+        if (osmoCard.getExtendedAction() != null) {
+            dto.setExtendedActionName(osmoCard.getExtendedAction().getName());
+            dto.setExtendedActionCode(osmoCard.getExtendedAction().getCode());
+        }
         return dto;
     } 
 
@@ -48,6 +59,8 @@ public class OsmoCardMapper {
         osmoCard.setExpressionId(osmoCardDto.getExpressionId());
         osmoCard.setActionId(osmoCardDto.getActionId());
         osmoCard.setDanceId(osmoCardDto.getDanceId());
+        osmoCard.setSkillId(osmoCardDto.getSkillId());
+        osmoCard.setExtendedActionId(osmoCardDto.getExtendedActionId());
         return osmoCard;
     }
 }

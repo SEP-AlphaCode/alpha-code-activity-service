@@ -56,6 +56,12 @@ public class OsmoCard {
     @Column(name = "dance_id", insertable = false, updatable = false)
     private UUID danceId;
 
+    @Column(name = "skill_id", insertable = false, updatable = false)
+    private UUID skillId;
+
+    @Column(name = "extended_action_id", insertable = false, updatable = false)
+    private UUID extendedActionId;
+
     //Relationship
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "action_id", insertable = false, updatable = false)

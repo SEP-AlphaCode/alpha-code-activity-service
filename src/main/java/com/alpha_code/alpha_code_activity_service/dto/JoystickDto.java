@@ -1,11 +1,10 @@
 package com.alpha_code.alpha_code_activity_service.dto;
 
-import com.alpha_code.alpha_code_activity_service.enums.OsmoCardEnum;
 import com.alpha_code.alpha_code_activity_service.validation.OnCreate;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,21 +13,26 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OsmoCardDto implements Serializable {
+public class JoystickDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
 
-    @NotBlank(message = "Color is required", groups = {OnCreate.class})
-    @Size(max = 50, message = "Color must not exceed 50 characters")
-    private String color;
+    @NotNull(message = "Account id là bắt buộc", groups = {OnCreate.class})
+    private UUID accountId;
 
-    @NotBlank(message = "Name is required", groups = {OnCreate.class})
-    @Size(max = 100, message = "Name must not exceed 100 characters")
-    private String name;
+    @NotNull(message = "Robot id là bắt buộc", groups = {OnCreate.class})
+    private UUID robotId;
+
+    @NotNull(message = "Button là bắt buộc", groups = {OnCreate.class})
+    private String buttonCode;
 
     private Integer status;
+
+    @NotNull(message = "Type là bắt buộc", groups = {OnCreate.class})
+    private String type;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime lastUpdated;
@@ -71,9 +75,4 @@ public class OsmoCardDto implements Serializable {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String extendedActionCode;
-
-    @JsonProperty(value = "statusText", access = JsonProperty.Access.READ_ONLY)
-    public String getStatusText() {
-        return OsmoCardEnum.fromCode(this.status);
-    }
 }
