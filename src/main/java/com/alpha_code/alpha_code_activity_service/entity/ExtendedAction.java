@@ -58,6 +58,6 @@ public class ExtendedAction {
     private String icon;
 
     //Relationship
-    @OneToMany(mappedBy = "action", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "extendedAction", fetch = FetchType.LAZY)
     private List<OsmoCard> osmoCards;
 }

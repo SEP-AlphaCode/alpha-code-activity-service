@@ -58,6 +58,6 @@ public class Skill {
     private String icon;
 
     //Relationship
-    @OneToMany(mappedBy = "action", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY)
     private List<OsmoCard> osmoCards;
 }

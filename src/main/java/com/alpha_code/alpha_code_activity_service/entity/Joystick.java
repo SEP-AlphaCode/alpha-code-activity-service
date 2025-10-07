@@ -57,20 +57,20 @@ public class Joystick {
     @Column(name = "type", nullable = false)
     private String type;
 
-    // ID của từng loại hành động — CHO PHÉP NULL
-    @Column(name = "action_id")
+    // Các ID chỉ để đọc (không ghi đè, không insert/update)
+    @Column(name = "action_id", insertable = false, updatable = false)
     private UUID actionId;
 
-    @Column(name = "expression_id")
+    @Column(name = "expression_id", insertable = false, updatable = false)
     private UUID expressionId;
 
-    @Column(name = "dance_id")
+    @Column(name = "dance_id", insertable = false, updatable = false)
     private UUID danceId;
 
-    @Column(name = "skill_id")
+    @Column(name = "skill_id", insertable = false, updatable = false)
     private UUID skillId;
 
-    @Column(name = "extended_action_id")
+    @Column(name = "extended_action_id", insertable = false, updatable = false)
     private UUID extendedActionId;
 
     // Liên kết — dùng LAZY để tránh load thừa
