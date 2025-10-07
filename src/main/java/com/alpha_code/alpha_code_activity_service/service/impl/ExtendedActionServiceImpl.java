@@ -27,10 +27,11 @@ public class ExtendedActionServiceImpl implements ExtendedActionService {
     private final ExtendedActionRepository extendedActionRepository;
 
     @Override
-    @Cacheable(value = "extended_actions_list", key = "{#page, #size, #keyword}")
+    @Cacheable(value = "extended_actions_list", key = "{#page, #size, #searchTerm}")
     public PagedResult<ExtendedActionDto> searchExtendedActions(int page, int size, String searchTerm) {
+        String keyword = (searchTerm == null || searchTerm.trim().isEmpty()) ? "" : searchTerm.trim();
         Pageable pageable = PageRequest.of(Math.max(page - 1, 0), size);
-        Page<ExtendedAction> actions = extendedActionRepository.searchExtendedActions(searchTerm, pageable);
+        Page<ExtendedAction> actions = extendedActionRepository.searchExtendedActions(keyword, pageable);
         return new PagedResult<>(actions.map(ExtendedActionMapper::toDto));
     }
 

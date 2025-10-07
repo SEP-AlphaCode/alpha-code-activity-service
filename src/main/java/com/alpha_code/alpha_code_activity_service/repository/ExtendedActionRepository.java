@@ -20,13 +20,11 @@ public interface  ExtendedActionRepository extends JpaRepository<ExtendedAction,
     Page<ExtendedAction> findByRobotModelIdAndStatusNot(UUID robotModelId, Integer status, Pageable pageable);
 
     @Query("""
-       SELECT ea FROM ExtendedAction ea
-       WHERE :searchTerm IS NULL OR 
-             LOWER(ea.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(ea.code) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
-       ORDER BY  ea.createdDate DESC 
-       """)
+    SELECT ea FROM ExtendedAction ea
+    WHERE (:searchTerm IS NULL OR
+           LOWER(ea.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+           LOWER(ea.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')))
+    ORDER BY ea.createdDate DESC
+""")
     Page<ExtendedAction> searchExtendedActions(@Param("searchTerm") String searchTerm, Pageable pageable);
-
-
 }
