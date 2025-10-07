@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface ActionService {
     PagedResult<ActionDto> searchActions(int page, int size,
+                                         UUID robotModelId,
                                          String name,
                                          String code,
                                          Integer status,
@@ -20,7 +21,7 @@ public interface ActionService {
 
     ActionDto getActionByCode(String code);
 
-    ActionDto getActionByRobotModelId(UUID robotModelId);
+    PagedResult<ActionDto> getActionByRobotModelId(UUID robotModelId, int page, int size);
 
     ActionDto createAction(ActionDto actionDto);
 

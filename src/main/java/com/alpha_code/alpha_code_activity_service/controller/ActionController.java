@@ -24,12 +24,13 @@ public class ActionController {
     @Operation(summary = "Get all actions with pagination and optional filters")
     public PagedResult<ActionDto> getAll(@RequestParam(value = "page", defaultValue = "1") int page,
                                          @RequestParam(value = "size", defaultValue = "10") int size,
+                                         @RequestParam(value = "robotModelId", required = false) UUID robotModelId,
                                          @RequestParam(value = "name", required = false) String name,
                                          @RequestParam(value = "code", required = false) String code,
                                          @RequestParam(value = "status", required = false) Integer status,
                                          @RequestParam(value = "canInterrupt", required = false) Boolean canInterrupt,
                                          @RequestParam(value = "duration", required = false) Integer duration) {
-        return service.searchActions(page, size, name, code, status, canInterrupt, duration);
+        return service.searchActions(page, size, robotModelId, name, code, status, canInterrupt, duration);
     }
 
     @GetMapping("/{id}")
@@ -50,10 +51,11 @@ public class ActionController {
         return service.getActionByCode(code);
     }
 
-    @GetMapping("/robot-model/{robotModelId}")
+    @GetMapping("/robot-model")
     @Operation(summary = "Get action by robot model id")
-    public ActionDto getByRobotModelId(@PathVariable UUID robotModelId) {
-        return service.getActionByRobotModelId(robotModelId);
+    public PagedResult<ActionDto> getByRobotModelId(@RequestParam UUID robotModelId, @RequestParam(value = "page", defaultValue = "1") int page,
+                                                    @RequestParam(value = "size", defaultValue = "10") int size) {
+        return service.getActionByRobotModelId(robotModelId, page, size);
     }
 
     @PostMapping

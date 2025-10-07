@@ -1,10 +1,13 @@
 package com.alpha_code.alpha_code_activity_service.service.impl;
 
 import com.alpha_code.alpha_code_activity_service.dto.ActionDto;
+import com.alpha_code.alpha_code_activity_service.dto.ExtendedActionDto;
 import com.alpha_code.alpha_code_activity_service.dto.PagedResult;
 import com.alpha_code.alpha_code_activity_service.entity.Action;
+import com.alpha_code.alpha_code_activity_service.exception.ConflictException;
 import com.alpha_code.alpha_code_activity_service.exception.ResourceNotFoundException;
 import com.alpha_code.alpha_code_activity_service.mapper.ActionMapper;
+import com.alpha_code.alpha_code_activity_service.mapper.ExtendedActionMapper;
 import com.alpha_code.alpha_code_activity_service.repository.ActionRepository;
 import com.alpha_code.alpha_code_activity_service.service.ActionService;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +30,10 @@ public class ActionServiceImpl implements ActionService {
     private final ActionRepository actionRepository;
 
     @Override
-    @Cacheable(value = "actions_list", key = "{#page, #size, #name, #code, #status, #canInterrupt, #duration}")
-    public PagedResult<ActionDto> searchActions(int page, int size, String name, String code, Integer status, Boolean canInterrupt, Integer duration) {
+    @Cacheable(value = "actions_list", key = "{#page, #size, #robotModelId ,#name, #code, #status, #canInterrupt, #duration}")
+    public PagedResult<ActionDto> searchActions(int page, int size, UUID robotModelId, String name, String code, Integer status, Boolean canInterrupt, Integer duration) {
         Pageable pageable = PageRequest.of(page - 1,size);
-        Page<Action> actions = actionRepository.searchActions(name, code, status, canInterrupt, duration, pageable);
+        Page<Action> actions = actionRepository.searchActions(robotModelId, name, code, status, canInterrupt, duration, pageable);
 
         return new PagedResult<>(actions.map(ActionMapper::toDto));
     }
@@ -62,10 +65,14 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     @Cacheable(value = "actions", key = "#robotModelId")
-    public ActionDto getActionByRobotModelId(UUID robotModelId) {
-        Action action = actionRepository.findByRobotModelIdAndStatusNot(robotModelId, 0)
-                .orElseThrow(() -> new ResourceNotFoundException("Action not found with robot model id: " + robotModelId));
-        return ActionMapper.toDto(action);
+    public PagedResult<ActionDto> getActionByRobotModelId(UUID robotModelId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1,size);
+        Page<Action>  actions = actionRepository.findByRobotModelIdAndStatusNot(robotModelId, 0, pageable);
+        // Map sang DTO
+        Page<ActionDto> dtoPage = actions.map(ActionMapper::toDto);
+
+        // Trả về dạng PagedResult (custom wrapper)
+        return new PagedResult<>(dtoPage);
     }
 
     @Override
@@ -73,14 +80,14 @@ public class ActionServiceImpl implements ActionService {
     @CacheEvict(value = {"actions_list"}, allEntries = true)
     public ActionDto createAction(ActionDto actionDto) {
 
-        var existed = actionRepository.findByCodeIgnoreCaseAndStatusNot(actionDto.getName(), 0);
+        var existed = actionRepository.findByCodeIgnoreCaseAndStatusNot(actionDto.getCode(), 0);
         if (existed.isPresent()) {
-            throw new ResourceNotFoundException("Action already exists with name: " + actionDto.getName());
+            throw new ConflictException("Đã tồn tại action với code: " + actionDto.getCode());
         }
 
         existed = actionRepository.findByNameIgnoreCaseAndStatusNot(actionDto.getName(), 0);
         if (existed.isPresent()) {
-            throw new ResourceNotFoundException("Action already exists with name: " + actionDto.getName());
+            throw new ConflictException("Đã tồn tại action với tên: " + actionDto.getName());
         }
 
         Action action = ActionMapper.toEntity(actionDto);
@@ -96,7 +103,7 @@ public class ActionServiceImpl implements ActionService {
     @CacheEvict(value = {"actions_list"}, allEntries = true)
     public ActionDto updateAction(UUID id, ActionDto actionDto) {
         Action existingAction = actionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Action not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hành động với id: " + id));
 
         existingAction.setName(actionDto.getName());
         existingAction.setDescription(actionDto.getDescription());
@@ -117,7 +124,7 @@ public class ActionServiceImpl implements ActionService {
     @CacheEvict(value = {"actions_list"}, allEntries = true)
     public ActionDto patchUpdateAction(UUID id, ActionDto actionDto) {
         Action existingAction = actionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Action not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hành động với id: " + id));
 
         if (actionDto.getName() != null) {
             existingAction.setName(actionDto.getName());
@@ -153,7 +160,7 @@ public class ActionServiceImpl implements ActionService {
     @CacheEvict(value = {"actions_list"}, allEntries = true)
     public ActionDto changeActionStatus(UUID id, Integer status) {
         Action existingAction = actionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Action not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hành động với id: " + id));
         existingAction.setStatus(status);
         existingAction.setLastUpdated(LocalDateTime.now());
         Action updatedAction = actionRepository.save(existingAction);
@@ -165,11 +172,11 @@ public class ActionServiceImpl implements ActionService {
     @CacheEvict(value = {"actions", "actions_list"}, key = "#id", allEntries = true)
     public String deleteAction(UUID id) {
         Action existingAction = actionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Action not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hành động với id: " + id));
 
         existingAction.setStatus(0);
         existingAction.setLastUpdated(LocalDateTime.now());
         actionRepository.save(existingAction);
-        return "Action deleted successfully";
+        return "Hành động đã được xóa thành công";
     }
 }

@@ -68,4 +68,12 @@ public class OsmoCard {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dance_id", insertable = false, updatable = false)
     private Dance dance;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "skill_id", insertable = false, updatable = false)
+    private Skill skill;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "extended_action_id", insertable = false, updatable = false)
+    private ExtendedAction extendedAction;
 }

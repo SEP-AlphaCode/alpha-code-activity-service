@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ActionEnum {
+public enum ExtendedActionEnum {
     DELETED(0, "ĐÃ XÓA"),
     ACTIVE(1, "ĐANG HOẠT ĐỘNG");
 
@@ -14,7 +14,7 @@ public enum ActionEnum {
 
     public static String fromCode(Integer code) {
         if (code == null) return null;
-        for (ActionEnum s : values()) {
+        for (ExtendedActionEnum s : values()) {
             if (s.code == code) {
                 return s.description;
             }

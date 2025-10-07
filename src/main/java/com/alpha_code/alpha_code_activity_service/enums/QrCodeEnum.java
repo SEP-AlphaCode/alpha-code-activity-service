@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum QrCodeEnum {
-    DELETED(0, "DELETED"),
-    ACTIVE(1, "ACTIVE"),
-    DISABLED(2, "DISABLED");
+    DELETED(0, "ĐÃ XÓA"),
+    ACTIVE(1, "ĐANG HOẠT ĐỘNG"),
+    DISABLED(2, "ĐÃ KHÓA");
 
     private final int code;
     private final String description;
