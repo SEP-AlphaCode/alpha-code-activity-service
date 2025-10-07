@@ -21,7 +21,7 @@ public interface  ExtendedActionRepository extends JpaRepository<ExtendedAction,
 
     @Query("""
        SELECT ea FROM ExtendedAction ea
-       WHERE :keyword IS NULL OR 
+       WHERE :searchTerm IS NULL OR 
              LOWER(ea.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
              LOWER(ea.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
              CAST(ea.status AS string) LIKE CONCAT('%', :searchTerm, '%')

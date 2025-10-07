@@ -22,7 +22,7 @@ public class JoystickController {
     // -----------------------------
     @GetMapping("/by-account-robot")
     @Operation(summary = "Lấy joystick theo accountId và robotId (có cache Redis)")
-    public JoystickDto getByAccountIdAndRobotId(
+    public  JoystickDto getByAccountIdAndRobotId(
             @RequestParam UUID accountId,
             @RequestParam UUID robotId
     ) {

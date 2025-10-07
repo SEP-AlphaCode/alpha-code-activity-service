@@ -19,7 +19,7 @@ public interface SkillRepository extends JpaRepository<Skill, UUID> {
 
     @Query("""
        SELECT s FROM Skill s
-       WHERE :keyword IS NULL OR 
+       WHERE :searchTerm IS NULL OR 
              LOWER(s.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
              LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
              CAST(s.status AS string) LIKE CONCAT('%', :searchTerm, '%')
