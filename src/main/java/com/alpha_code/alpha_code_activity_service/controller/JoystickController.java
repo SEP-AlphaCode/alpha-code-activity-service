@@ -1,12 +1,14 @@
 package com.alpha_code.alpha_code_activity_service.controller;
 
 import com.alpha_code.alpha_code_activity_service.dto.JoystickDto;
+import com.alpha_code.alpha_code_activity_service.dto.PagedResult;
 import com.alpha_code.alpha_code_activity_service.service.JoystickService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,7 +24,7 @@ public class JoystickController {
     // -----------------------------
     @GetMapping("/by-account-robot")
     @Operation(summary = "Lấy joystick theo accountId và robotId (có cache Redis)")
-    public  JoystickDto getByAccountIdAndRobotId(
+    public List<JoystickDto> getByAccountIdAndRobotId(
             @RequestParam UUID accountId,
             @RequestParam UUID robotId
     ) {

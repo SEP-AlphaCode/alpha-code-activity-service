@@ -1,7 +1,9 @@
 package com.alpha_code.alpha_code_activity_service.service.impl;
 
 import com.alpha_code.alpha_code_activity_service.dto.JoystickDto;
+import com.alpha_code.alpha_code_activity_service.dto.PagedResult;
 import com.alpha_code.alpha_code_activity_service.entity.Joystick;
+import com.alpha_code.alpha_code_activity_service.entity.Skill;
 import com.alpha_code.alpha_code_activity_service.exception.ResourceNotFoundException;
 import com.alpha_code.alpha_code_activity_service.mapper.JoystickMapper;
 import com.alpha_code.alpha_code_activity_service.repository.JoystickRepository;
@@ -11,10 +13,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +34,18 @@ public class JoystickServiceImpl implements JoystickService {
     // -----------------------------
     @Override
     @Cacheable(value = "joystick_by_robot", key = "{#accountId, #robotId}")
-    public JoystickDto getByAccountIdAndRobotId(UUID accountId, UUID robotId) {
-        Joystick joystick = joystickRepository
-                .findByAccountIdAndRobotIdAndStatus(accountId, robotId, 1)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Không tìm thấy joystick cho accountId: " + accountId + " và robotId: " + robotId));
+    public List<JoystickDto> getByAccountIdAndRobotId(UUID accountId, UUID robotId) {
+        List<Joystick> joysticks = joystickRepository
+                .findListByAccountIdAndRobotIdAndStatus(accountId, robotId, 1);
 
-        return JoystickMapper.toDto(joystick);
+        if (joysticks.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "Không tìm thấy joystick cho accountId: " + accountId + " và robotId: " + robotId);
+        }
+
+        return joysticks.stream()
+                .map(JoystickMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     // -----------------------------
