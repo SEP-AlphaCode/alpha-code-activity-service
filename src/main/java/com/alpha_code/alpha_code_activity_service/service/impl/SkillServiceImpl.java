@@ -29,8 +29,9 @@ public class SkillServiceImpl implements SkillService {
     @Override
     @Cacheable(value = "skills_list", key = "{#page, #size, #keyword}")
     public PagedResult<SkillDto> searchSkills(int page, int size, String searchTerm) {
+        String keyword = (searchTerm == null || searchTerm.trim().isEmpty()) ? "" : searchTerm.trim();
         Pageable pageable = PageRequest.of(Math.max(page - 1, 0), size);
-        Page<Skill> actions = skillRepository.searchSkills(searchTerm, pageable);
+        Page<Skill> actions = skillRepository.searchSkills(keyword, pageable);
         return new PagedResult<>(actions.map(SkillMapper::toDto));
     }
 
