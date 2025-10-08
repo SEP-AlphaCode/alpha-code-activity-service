@@ -14,10 +14,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(
-        name = "joystick",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"account_id", "robot_id", "button_code"})
-        }
+        name = "joystick"
 )
 public class Joystick {
 
