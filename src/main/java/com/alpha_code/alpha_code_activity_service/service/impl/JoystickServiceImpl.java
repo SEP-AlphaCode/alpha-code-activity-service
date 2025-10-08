@@ -1,9 +1,7 @@
 package com.alpha_code.alpha_code_activity_service.service.impl;
 
 import com.alpha_code.alpha_code_activity_service.dto.JoystickDto;
-import com.alpha_code.alpha_code_activity_service.dto.PagedResult;
 import com.alpha_code.alpha_code_activity_service.entity.Joystick;
-import com.alpha_code.alpha_code_activity_service.entity.Skill;
 import com.alpha_code.alpha_code_activity_service.exception.ResourceNotFoundException;
 import com.alpha_code.alpha_code_activity_service.mapper.JoystickMapper;
 import com.alpha_code.alpha_code_activity_service.repository.JoystickRepository;
@@ -11,11 +9,7 @@ import com.alpha_code.alpha_code_activity_service.service.JoystickService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -97,7 +91,7 @@ public class JoystickServiceImpl implements JoystickService {
     // -----------------------------
     @Override
     @Transactional
-    @CachePut(value = "joystick_by_robot", key = "{#joystickDto.accountId, #joystickDto.robotId}")
+    @CacheEvict(value = "joystick_by_robot", key = "{#joystickDto.accountId, #joystickDto.robotId}")
     public JoystickDto update(UUID id, JoystickDto joystickDto) {
         var existing = joystickRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy joystick với ID: " + id));
@@ -138,7 +132,7 @@ public class JoystickServiceImpl implements JoystickService {
     // -----------------------------
     @Override
     @Transactional
-    @CachePut(value = "joystick_by_robot", key = "{#joystickDto.accountId, #joystickDto.robotId}")
+    @CacheEvict(value = "joystick_by_robot", key = "{#joystickDto.accountId, #joystickDto.robotId}")
     public JoystickDto patch(UUID id, JoystickDto joystickDto) {
         var existing = joystickRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy joystick với ID: " + id));
