@@ -55,39 +55,39 @@ public class Joystick {
     private String type;
 
     // Các ID chỉ để đọc (không ghi đè, không insert/update)
-    @Column(name = "action_id", insertable = false, updatable = false)
+    @Column(name = "action_id")
     private UUID actionId;
 
-    @Column(name = "expression_id", insertable = false, updatable = false)
+    @Column(name = "expression_id")
     private UUID expressionId;
 
-    @Column(name = "dance_id", insertable = false, updatable = false)
+    @Column(name = "dance_id")
     private UUID danceId;
 
-    @Column(name = "skill_id", insertable = false, updatable = false)
+    @Column(name = "skill_id")
     private UUID skillId;
 
-    @Column(name = "extended_action_id", insertable = false, updatable = false)
+    @Column(name = "extended_action_id")
     private UUID extendedActionId;
 
     // Liên kết — dùng LAZY để tránh load thừa
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "action_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "action_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     private Action action;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "expression_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "expression_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     private Expression expression;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dance_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "dance_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     private Dance dance;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "skill_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "skill_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     private Skill skill;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "extended_action_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "extended_action_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     private ExtendedAction extendedAction;
 }
