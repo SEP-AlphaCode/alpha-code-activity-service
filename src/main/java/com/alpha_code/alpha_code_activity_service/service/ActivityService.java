@@ -12,7 +12,7 @@ public interface ActivityService {
 
     ActivityDto getActivityById(UUID id);
 
-    List<ActivityDto> getByAccountId(UUID accountId);
+    PagedResult<ActivityDto> getByAccountId(UUID accountId, int page, int size);
 
     List<ActivityDto> getByType(String type);
 

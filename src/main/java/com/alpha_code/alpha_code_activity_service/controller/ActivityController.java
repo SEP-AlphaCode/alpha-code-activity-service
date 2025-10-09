@@ -37,10 +37,12 @@ public class ActivityController {
         return service.getActivityById(id);
     }
 
-    @GetMapping("/account/{accountId}")
+    @GetMapping("/account")
     @Operation(summary = "Get activities by account id")
-    public List<ActivityDto> getByAccountId(@PathVariable UUID accountId){
-        return service.getByAccountId(accountId);
+    public PagedResult<ActivityDto> getByAccountId(@RequestParam UUID accountId,
+                                                   @RequestParam(value = "page", defaultValue = "1") int page,
+                                                   @RequestParam(value = "size", defaultValue = "10") int size){
+        return service.getByAccountId(accountId, page, size);
     }
 
     @GetMapping("/type/{type}")

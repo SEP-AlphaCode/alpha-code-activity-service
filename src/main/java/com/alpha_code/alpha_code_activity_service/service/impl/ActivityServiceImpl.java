@@ -49,9 +49,12 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Cacheable(value = "activities_list", key = "#accountId")
-    public List<ActivityDto> getByAccountId(UUID accountId) {
-        return repository.findAllByAccountIdAndStatusNot(accountId, 0)
-                .stream().map(ActivityMapper::toDto).toList();
+    public PagedResult<ActivityDto> getByAccountId(UUID accountId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Activity> pageResult;
+        pageResult = repository.findAllByAccountIdAndStatusNot(accountId, 0, pageable);
+
+        return  new PagedResult<>(pageResult.map(ActivityMapper::toDto));
     }
 
     @Override
