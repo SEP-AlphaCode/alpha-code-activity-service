@@ -21,8 +21,8 @@ public interface SkillRepository extends JpaRepository<Skill, UUID> {
        SELECT s FROM Skill s
        WHERE :searchTerm IS NULL OR 
              LOWER(s.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             CAST(s.status AS string) LIKE CONCAT('%', :searchTerm, '%')
+             LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND 
+                s.status != 0
        ORDER BY s.name
        """)
     Page<Skill> searchSkills(@Param("searchTerm") String searchTerm, Pageable pageable);
