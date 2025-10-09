@@ -5,35 +5,81 @@ import com.alpha_code.alpha_code_activity_service.dto.PagedResult;
 import com.alpha_code.alpha_code_activity_service.entity.ExtendedAction;
 import com.alpha_code.alpha_code_activity_service.exception.ConflictException;
 import com.alpha_code.alpha_code_activity_service.exception.ResourceNotFoundException;
+import com.alpha_code.alpha_code_activity_service.grpc.client.RobotServiceClient;
 import com.alpha_code.alpha_code_activity_service.mapper.ExtendedActionMapper;
 import com.alpha_code.alpha_code_activity_service.repository.ExtendedActionRepository;
 import com.alpha_code.alpha_code_activity_service.service.ExtendedActionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import robot.Robot;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ExtendedActionServiceImpl implements ExtendedActionService {
     private final ExtendedActionRepository extendedActionRepository;
+    private final RobotServiceClient robotServiceClient;
+
 
     @Override
-    @Cacheable(value = "extended_actions_list", key = "{#page, #size, #searchTerm}")
+    @Cacheable(value = "extended_actions_list", key = "{#page, #size, #searchTerm != null ? #searchTerm.trim() : ''}")
     public PagedResult<ExtendedActionDto> searchExtendedActions(int page, int size, String searchTerm) {
+        log.debug("Searching extended actions: page={}, size={}, searchTerm='{}'", page, size, searchTerm);
+
+        // Chuẩn hóa keyword và pageable
         String keyword = (searchTerm == null || searchTerm.trim().isEmpty()) ? "" : searchTerm.trim();
         Pageable pageable = PageRequest.of(Math.max(page - 1, 0), size);
+
+        //  Query dữ liệu từ DB
         Page<ExtendedAction> actions = extendedActionRepository.searchExtendedActions(keyword, pageable);
-        return new PagedResult<>(actions.map(ExtendedActionMapper::toDto));
+        List<ExtendedActionDto> dtos = actions.getContent().stream()
+                .map(ExtendedActionMapper::toDto)
+                .toList();
+
+        // Nếu không có dữ liệu → trả rỗng
+        if (dtos.isEmpty()) {
+            return new PagedResult<>(Page.empty(pageable));
+        }
+
+        // Lấy danh sách modelId duy nhất
+        List<String> modelIds = dtos.stream()
+                .map(action -> action.getRobotModelId().toString())
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        // Gọi gRPC để lấy thông tin model
+        Map<String, Robot.RobotModelInformation> modelMap = Collections.emptyMap();
+        try {
+            modelMap = robotServiceClient.getRobotModelsByIds(modelIds);
+        } catch (Exception e) {
+            log.error("Failed to fetch robot models via gRPC", e);
+        }
+
+        // Gán robotModelName cho từng DTO
+        Map<String, Robot.RobotModelInformation> finalModelMap = modelMap;
+        dtos.forEach(dto -> {
+            Robot.RobotModelInformation model = finalModelMap.get(dto.getRobotModelId().toString());
+            dto.setRobotModelName(model != null ? model.getName() : "Unknown");
+        });
+
+        //  Trả kết quả phân trang
+        Page<ExtendedActionDto> dtoPage = new PageImpl<>(dtos, pageable, actions.getTotalElements());
+        return new PagedResult<>(dtoPage);
     }
+
 
 
     @Override
