@@ -18,13 +18,16 @@ public interface SkillRepository extends JpaRepository<Skill, UUID> {
     Page<Skill> findByRobotModelIdAndStatusNot(UUID robotModelId, Integer status, Pageable pageable);
 
     @Query("""
-       SELECT s FROM Skill s
-       WHERE :searchTerm IS NULL OR 
-             LOWER(s.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND 
-                s.status <> 0
-       ORDER BY s.name
-       """)
+    SELECT s FROM Skill s
+    WHERE (
+            :searchTerm IS NULL OR 
+            LOWER(s.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+            LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+          )
+      AND s.status <> 0
+    ORDER BY s.createdDate DESC
+    """)
     Page<Skill> searchSkills(@Param("searchTerm") String searchTerm, Pageable pageable);
+
 
 }
