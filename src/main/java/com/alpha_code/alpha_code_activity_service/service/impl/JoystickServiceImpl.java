@@ -6,6 +6,11 @@ import com.alpha_code.alpha_code_activity_service.exception.ResourceNotFoundExce
 import com.alpha_code.alpha_code_activity_service.mapper.JoystickMapper;
 import com.alpha_code.alpha_code_activity_service.repository.JoystickRepository;
 import com.alpha_code.alpha_code_activity_service.service.JoystickService;
+import com.alpha_code.alpha_code_activity_service.service.ActionService;
+import com.alpha_code.alpha_code_activity_service.service.DanceService;
+import com.alpha_code.alpha_code_activity_service.service.ExpressionService;
+import com.alpha_code.alpha_code_activity_service.service.SkillService;
+import com.alpha_code.alpha_code_activity_service.service.ExtendedActionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,6 +27,38 @@ import java.util.stream.Collectors;
 public class JoystickServiceImpl implements JoystickService {
 
     private final JoystickRepository joystickRepository;
+    private final ActionService actionService;
+    private final DanceService danceService;
+    private final ExpressionService expressionService;
+    private final SkillService skillService;
+    private final ExtendedActionService extendedActionService;
+
+    // -----------------------------
+    // HELPER METHOD - VALIDATE ACTION IDS EXISTENCE
+    // -----------------------------
+    private void validateActionIdsExistence(UUID actionId, UUID danceId, UUID expressionId, UUID skillId, UUID extendedActionId) {
+        try {
+            if (actionId != null) {
+                actionService.getActionById(actionId);
+            }
+            if (danceId != null) {
+                danceService.getById(danceId);
+            }
+            if (expressionId != null) {
+                expressionService.getById(expressionId);
+            }
+            if (skillId != null) {
+                skillService.getSkillById(skillId);
+            }
+            if (extendedActionId != null) {
+                extendedActionService.getExtendedActionById(extendedActionId);
+            }
+        } catch (ResourceNotFoundException e) {
+            throw new IllegalArgumentException("ID hành động không tồn tại: " + e.getMessage());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Không thể xác thực ID hành động: " + e.getMessage());
+        }
+    }
 
     // -----------------------------
     // GET BY ACCOUNT + ROBOT
@@ -78,6 +115,9 @@ public class JoystickServiceImpl implements JoystickService {
             throw new IllegalArgumentException("Joystick chỉ được phép gán một loại hành động duy nhất");
         }
 
+        // Validate sự tồn tại của các ID hành động
+        validateActionIdsExistence(entity.getActionId(), entity.getDanceId(), entity.getExpressionId(), entity.getSkillId(), entity.getExtendedActionId());
+
         entity.setStatus(1);
         entity.setCreatedDate(LocalDateTime.now());
         entity.setLastUpdated(null);
@@ -115,6 +155,9 @@ public class JoystickServiceImpl implements JoystickService {
             throw new IllegalArgumentException("Joystick chỉ được phép gán một loại hành động duy nhất");
         }
 
+        // Validate sự tồn tại của các ID hành động
+        validateActionIdsExistence(joystickDto.getActionId(), joystickDto.getDanceId(), joystickDto.getExpressionId(), joystickDto.getSkillId(), joystickDto.getExtendedActionId());
+
         existing.setButtonCode(joystickDto.getButtonCode());
         existing.setActionId(joystickDto.getActionId());
         existing.setDanceId(joystickDto.getDanceId());
@@ -149,6 +192,15 @@ public class JoystickServiceImpl implements JoystickService {
         if (joystickDto.getExtendedActionId() != null) existing.setExtendedActionId(joystickDto.getExtendedActionId());
 
         existing.setLastUpdated(LocalDateTime.now());
+
+        // Validate sự tồn tại của các ID hành động (chỉ validate những ID được truyền vào)
+        validateActionIdsExistence(
+            joystickDto.getActionId(),
+            joystickDto.getDanceId(),
+            joystickDto.getExpressionId(),
+            joystickDto.getSkillId(),
+            joystickDto.getExtendedActionId()
+        );
 
         // Validate chỉ 1 loại hành động
         int count = 0;
