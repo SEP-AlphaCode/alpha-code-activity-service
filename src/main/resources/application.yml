@@ -48,5 +48,13 @@ mqtt:
   broker: ${MQTT_BROKER:tcp://localhost:1883}
   clientId: ${MQTT_CLIENT_ID:spring-device-service}
 
+grpc:
+  client:
+    alpha-robot-service:
+      address: static://${GRPC_ROBOT_SERVICE_BASE_URL}:${GRPC_ROBOT_SERVICE_PORT}
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
 
 

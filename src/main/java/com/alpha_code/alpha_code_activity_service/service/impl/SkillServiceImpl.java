@@ -5,35 +5,83 @@ import com.alpha_code.alpha_code_activity_service.dto.SkillDto;
 import com.alpha_code.alpha_code_activity_service.entity.Skill;
 import com.alpha_code.alpha_code_activity_service.exception.ConflictException;
 import com.alpha_code.alpha_code_activity_service.exception.ResourceNotFoundException;
+import com.alpha_code.alpha_code_activity_service.grpc.client.RobotServiceClient;
 import com.alpha_code.alpha_code_activity_service.mapper.SkillMapper;
 import com.alpha_code.alpha_code_activity_service.repository.SkillRepository;
 import com.alpha_code.alpha_code_activity_service.service.SkillService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import robot.Robot;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SkillServiceImpl implements SkillService {
     private final SkillRepository skillRepository;
+    private final RobotServiceClient robotServiceClient;
 
     @Override
-    @Cacheable(value = "skills_list", key = "{#page, #size, #keyword}")
+    @Cacheable(value = "skills_list", key = "{#page, #size, #searchTerm}")
     public PagedResult<SkillDto> searchSkills(int page, int size, String searchTerm) {
         String keyword = (searchTerm == null || searchTerm.trim().isEmpty()) ? "" : searchTerm.trim();
         Pageable pageable = PageRequest.of(Math.max(page - 1, 0), size);
-        Page<Skill> actions = skillRepository.searchSkills(keyword, pageable);
-        return new PagedResult<>(actions.map(SkillMapper::toDto));
+
+        Page<Skill> skillPage = skillRepository.searchSkills(keyword, pageable);
+
+        // Chuyển entity → DTO
+        List<SkillDto> skillDtos = skillPage.getContent().stream()
+                .map(SkillMapper::toDto)
+                .toList();
+
+        if (skillDtos.isEmpty()) {
+            return new PagedResult<>(Page.empty(pageable));
+        }
+
+        //  Lấy danh sách robotModelId
+        List<String> modelIds = skillDtos.stream()
+                .map(skill -> skill.getRobotModelId().toString())
+                .distinct()
+                .toList();
+
+        // Gọi gRPC 1 lần để lấy thông tin model name
+        Map<String, Robot.RobotModelInformation> modelMap = Collections.emptyMap();
+        try {
+            modelMap = robotServiceClient.getRobotModelsByIds(modelIds);
+        } catch (Exception e) {
+            log.error("Failed to fetch robot models via gRPC", e);
+        }
+
+        //  Gán robotModelName cho từng SkillDto
+        Map<String, Robot.RobotModelInformation> finalModelMap = modelMap;
+        skillDtos.forEach(skill -> {
+            Robot.RobotModelInformation model = finalModelMap.get(skill.getRobotModelId().toString());
+            if (model != null) {
+                skill.setRobotModelName(model.getName());
+            } else {
+                skill.setRobotModelName("Unknown");
+            }
+        });
+
+        // Trả về kết quả phân trang
+        Page<SkillDto> dtoPage = new PageImpl<>(skillDtos, pageable, skillPage.getTotalElements());
+        return new PagedResult<>(dtoPage);
     }
+
 
 
     @Override

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package robot;
+
+// Service
+service RobotService {
+  // RPC lấy thông tin 1 model
+  rpc GetRobotModel(GetByIdRequest) returns (RobotModelInformation);
+
+  // RPC lấy nhiều model theo danh sách ID
+  rpc GetRobotModelsByIds(GetByIdsRequest) returns (RobotModelListResponse);
+}
+
+// Request cho 1 ID
+message GetByIdRequest {
+  string id = 1;
+}
+
+// Request cho nhiều ID
+message GetByIdsRequest {
+  repeated string ids = 1;
+}
+
+// Response cho 1 model
+message RobotModelInformation {
+  string id = 1;
+  string name = 2;
+  string firmwareVersion = 3;
+  string ctrlVersion = 4;
+}
+
+// Response cho nhiều model
+message RobotModelListResponse {
+  repeated RobotModelInformation models = 1;
+}
