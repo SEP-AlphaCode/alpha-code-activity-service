@@ -53,16 +53,27 @@ public class OsmoCardServiceImpl implements OsmoCardService {
     @CacheEvict(value = {"osmo_cards_list", "osmo_cards"}, allEntries = true)
     public OsmoCardDto create(OsmoCardDto dto) {
         var entity = OsmoCardMapper.toEntity(dto);
-        if (entity.getActionId() == null && entity.getDanceId() == null && entity.getExpressionId() == null) {
-            throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, or Expression ID set");
-        } else if (entity.getActionId() != null && entity.getDanceId() != null && entity.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have all Action ID, Dance ID, and Expression ID set at the same time");
-        } else if (entity.getActionId() != null && entity.getDanceId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Action ID and Dance ID set at the same time");
-        } else if (entity.getActionId() != null && entity.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Action ID and Expression ID set at the same time");
-        } else if (entity.getDanceId() != null && entity.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Dance ID and Expression ID set at the same time");
+        int count = 0;
+        if (dto.getActionId() != null) {
+            count++;
+        }
+        if (dto.getDanceId() != null) {
+            count++;
+        }
+        if (dto.getExpressionId() != null) {
+            count++;
+        }
+        if (dto.getSkillId() != null) {
+            count++;
+        }
+        if (dto.getExtendedActionId() != null) {
+            count++;
+        }
+        if (count > 1) {
+            throw new IllegalArgumentException("Osmo Card cannot have more than one of Action ID, Dance ID, or Expression ID set");
+        }
+        if (count == 0) {
+            throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, Expression ID, Skill ID, or Extended Action ID set");
         }
 
         entity.setColor(dto.getColor());
@@ -76,6 +87,10 @@ public class OsmoCardServiceImpl implements OsmoCardService {
             entity.setDanceId(entity.getDanceId());
         } else if (entity.getExpressionId() != null) {
             entity.setExpressionId(entity.getExpressionId());
+        } else if (entity.getSkillId() != null) {
+            entity.setSkillId(entity.getSkillId());
+        } else if (entity.getExtendedActionId() != null) {
+            entity.setExtendedActionId(entity.getExtendedActionId());
         }
 
 
@@ -88,16 +103,27 @@ public class OsmoCardServiceImpl implements OsmoCardService {
     @CacheEvict(value = {"osmo_cards_list"}, allEntries = true)
     @CachePut(value = "osmo_cards", key = "#id")
     public OsmoCardDto update(UUID id, OsmoCardDto dto) {
-        if (dto.getActionId() == null && dto.getDanceId() == null && dto.getExpressionId() == null) {
-            throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, or Expression ID set");
-        } else if (dto.getActionId() != null && dto.getDanceId() != null && dto.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have all Action ID, Dance ID, and Expression ID set at the same time");
-        } else if (dto.getActionId() != null && dto.getDanceId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Action ID and Dance ID set at the same time");
-        } else if (dto.getActionId() != null && dto.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Action ID and Expression ID set at the same time");
-        } else if (dto.getDanceId() != null && dto.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Dance ID and Expression ID set at the same time");
+        int count = 0;
+        if (dto.getActionId() != null) {
+            count++;
+        }
+        if (dto.getDanceId() != null) {
+            count++;
+        }
+        if (dto.getExpressionId() != null) {
+            count++;
+        }
+        if (dto.getSkillId() != null) {
+            count++;
+        }
+        if (dto.getExtendedActionId() != null) {
+            count++;
+        }
+        if (count > 1) {
+            throw new IllegalArgumentException("Osmo Card cannot have more than one of Action ID, Dance ID, or Expression ID set");
+        }
+        if (count == 0) {
+            throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, Expression ID, Skill ID, or Extended Action ID set");
         }
 
         var existing = repository.findById(id)
@@ -107,10 +133,42 @@ public class OsmoCardServiceImpl implements OsmoCardService {
         existing.setColor(dto.getColor());
         existing.setStatus(dto.getStatus());
         existing.setLastUpdated(LocalDateTime.now());
-        existing.setExpressionId(dto.getExpressionId());
-        existing.setActionId(dto.getActionId());
-        existing.setDanceId(dto.getDanceId());
 
+        if (dto.getActionId() != null){
+            existing.setActionId(dto.getActionId());
+            existing.setExpressionId(null);
+            existing.setDanceId(null);
+            existing.setSkillId(null);
+            existing.setExtendedActionId(null);
+        }
+        if (dto.getDanceId() != null){
+            existing.setDanceId(dto.getDanceId());
+            existing.setActionId(null);
+            existing.setExpressionId(null);
+            existing.setSkillId(null);
+            existing.setExtendedActionId(null);
+        }
+        if (dto.getExpressionId() != null){
+            existing.setExpressionId(dto.getExpressionId());
+            existing.setActionId(null);
+            existing.setDanceId(null);
+            existing.setSkillId(null);
+            existing.setExtendedActionId(null);
+        }
+        if (dto.getSkillId() != null){
+            existing.setSkillId(dto.getSkillId());
+            existing.setActionId(null);
+            existing.setExpressionId(null);
+            existing.setDanceId(null);
+            existing.setExtendedActionId(null);
+        }
+        if (dto.getExtendedActionId() != null){
+            existing.setExtendedActionId(dto.getExtendedActionId());
+            existing.setActionId(null);
+            existing.setExpressionId(null);
+            existing.setSkillId(null);
+            existing.setDanceId(null);
+        }
 
         var updated = repository.save(existing);
         return OsmoCardMapper.toDto(updated);
@@ -121,14 +179,27 @@ public class OsmoCardServiceImpl implements OsmoCardService {
     @CacheEvict(value = {"osmo_cards_list"}, allEntries = true)
     @CachePut(value = "osmo_cards", key = "#id")
     public OsmoCardDto patchUpdate(UUID id, OsmoCardDto dto) {
-        if (dto.getActionId() != null && dto.getDanceId() != null && dto.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have all Action ID, Dance ID, and Expression ID set at the same time");
-        } else if (dto.getActionId() != null && dto.getDanceId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Action ID and Dance ID set at the same time");
-        } else if (dto.getActionId() != null && dto.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Action ID and Expression ID set at the same time");
-        } else if (dto.getDanceId() != null && dto.getExpressionId() != null) {
-            throw new IllegalArgumentException("Osmo Card cannot have both Dance ID and Expression ID set at the same time");
+        int count = 0;
+        if (dto.getActionId() != null) {
+            count++;
+        }
+        if (dto.getDanceId() != null) {
+            count++;
+        }
+        if (dto.getExpressionId() != null) {
+            count++;
+        }
+        if (dto.getSkillId() != null) {
+            count++;
+        }
+        if (dto.getExtendedActionId() != null) {
+            count++;
+        }
+        if (count > 1) {
+            throw new IllegalArgumentException("Osmo Card cannot have more than one of Action ID, Dance ID, or Expression ID set");
+        }
+        if (count == 0) {
+            throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, Expression ID, Skill ID, or Extended Action ID set");
         }
 
         var existing = repository.findById(id)
@@ -143,14 +214,40 @@ public class OsmoCardServiceImpl implements OsmoCardService {
         if (dto.getStatus() != null) {
             existing.setStatus(dto.getStatus());
         }
-        if (dto.getExpressionId() != null) {
-            existing.setExpressionId(dto.getExpressionId());
-        }
-        if (dto.getActionId() != null) {
+        if (dto.getActionId() != null){
             existing.setActionId(dto.getActionId());
+            existing.setExpressionId(null);
+            existing.setDanceId(null);
+            existing.setSkillId(null);
+            existing.setExtendedActionId(null);
         }
-        if (dto.getDanceId() != null) {
+        if (dto.getDanceId() != null){
             existing.setDanceId(dto.getDanceId());
+            existing.setActionId(null);
+            existing.setExpressionId(null);
+            existing.setSkillId(null);
+            existing.setExtendedActionId(null);
+        }
+        if (dto.getExpressionId() != null){
+            existing.setExpressionId(dto.getExpressionId());
+            existing.setActionId(null);
+            existing.setDanceId(null);
+            existing.setSkillId(null);
+            existing.setExtendedActionId(null);
+        }
+        if (dto.getSkillId() != null){
+            existing.setSkillId(dto.getSkillId());
+            existing.setActionId(null);
+            existing.setExpressionId(null);
+            existing.setDanceId(null);
+            existing.setExtendedActionId(null);
+        }
+        if (dto.getExtendedActionId() != null){
+            existing.setExtendedActionId(dto.getExtendedActionId());
+            existing.setActionId(null);
+            existing.setExpressionId(null);
+            existing.setSkillId(null);
+            existing.setDanceId(null);
         }
         existing.setLastUpdated(LocalDateTime.now());
 
@@ -177,7 +274,7 @@ public class OsmoCardServiceImpl implements OsmoCardService {
 
     @Override
     @Transactional
-    @CacheEvict(value = { "osmo_cards_list"},  allEntries = true)
+    @CacheEvict(value = {"osmo_cards_list"}, allEntries = true)
     @CachePut(value = "osmo_cards", key = "#id")
     public OsmoCardDto changeStatus(UUID id, Integer status) {
         OsmoCard entity = repository.findById(id)
