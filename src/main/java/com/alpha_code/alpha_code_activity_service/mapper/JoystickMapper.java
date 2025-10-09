@@ -66,6 +66,7 @@ public class JoystickMapper {
         joystick.setType(joystickDto.getType());
 
         joystick.setSkillId(joystickDto.getSkillId());
+        joystick.setExpressionId(joystickDto.getExpressionId());
         joystick.setExtendedActionId(joystickDto.getExtendedActionId());
         joystick.setDanceId(joystickDto.getDanceId());
         joystick.setActionId(joystickDto.getActionId());
