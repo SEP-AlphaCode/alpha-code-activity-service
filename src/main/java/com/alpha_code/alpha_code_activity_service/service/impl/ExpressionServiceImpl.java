@@ -1,32 +1,40 @@
 package com.alpha_code.alpha_code_activity_service.service.impl;
 
+import com.alpha_code.alpha_code_activity_service.dto.DanceDto;
 import com.alpha_code.alpha_code_activity_service.dto.ExpressionDto;
 import com.alpha_code.alpha_code_activity_service.dto.PagedResult;
 import com.alpha_code.alpha_code_activity_service.entity.Expression;
 import com.alpha_code.alpha_code_activity_service.exception.ResourceNotFoundException;
+import com.alpha_code.alpha_code_activity_service.grpc.client.RobotServiceClient;
+import com.alpha_code.alpha_code_activity_service.mapper.DanceMapper;
 import com.alpha_code.alpha_code_activity_service.mapper.ExpressionMapper;
 import com.alpha_code.alpha_code_activity_service.repository.ExpressionRepository;
 import com.alpha_code.alpha_code_activity_service.service.ExpressionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import robot.Robot;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+
 public class ExpressionServiceImpl implements ExpressionService {
 
     private final ExpressionRepository repository;
+    private final RobotServiceClient robotServiceClient;
 
     @Override
     @Cacheable(value = "expressions_list", key = "{#page, #size, #name, #code, #status, #robotModelId}")
@@ -36,7 +44,40 @@ public class ExpressionServiceImpl implements ExpressionService {
 
         pageResult = repository.getAll(name, code, status, robotModelId, pageable);
 
-        return new PagedResult<>(pageResult.map(ExpressionMapper::toDto));
+        List<ExpressionDto> dtos = pageResult.getContent().stream()
+                .map(ExpressionMapper::toDto)
+                .toList();
+
+        // Nếu không có dữ liệu → trả rỗng
+        if (dtos.isEmpty()) {
+            return new PagedResult<>(Page.empty(pageable));
+        }
+
+        // Lấy danh sách modelId duy nhất
+        List<String> modelIds = dtos.stream()
+                .map(action -> action.getRobotModelId().toString())
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        // Gọi gRPC để lấy thông tin model
+        Map<String, Robot.RobotModelInformation> modelMap = Collections.emptyMap();
+        try {
+            modelMap = robotServiceClient.getRobotModelsByIds(modelIds);
+        } catch (Exception e) {
+            log.error("Failed to fetch robot models via gRPC", e);
+        }
+
+        // Gán robotModelName cho từng DTO
+        Map<String, Robot.RobotModelInformation> finalModelMap = modelMap;
+        dtos.forEach(dto -> {
+            Robot.RobotModelInformation model = finalModelMap.get(dto.getRobotModelId().toString());
+            dto.setRobotModelName(model != null ? model.getName() : "Unknown");
+        });
+
+        //  Trả kết quả phân trang
+        Page<ExpressionDto> dtoPage = new PageImpl<>(dtos, pageable, pageResult.getTotalElements());
+        return new PagedResult<>(dtoPage);
     }
 
     @Override

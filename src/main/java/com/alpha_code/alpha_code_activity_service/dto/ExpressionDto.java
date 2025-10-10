@@ -42,6 +42,10 @@ public class ExpressionDto implements Serializable {
 
     private UUID robotModelId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String robotModelName;
+
+
     @JsonProperty(value = "statusText", access = JsonProperty.Access.READ_ONLY)
     public String getStatusText() {
         return ActionEnum.fromCode(this.status);

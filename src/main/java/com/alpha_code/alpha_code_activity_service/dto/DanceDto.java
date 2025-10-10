@@ -49,6 +49,9 @@ public class DanceDto implements Serializable {
     @NotNull(message = "Robot model id is required", groups = {OnCreate.class})
     private UUID robotModelId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String robotModelName;
+
     @JsonProperty(value = "statusText", access = JsonProperty.Access.READ_ONLY)
     public String getStatusText() {
         return ActionEnum.fromCode(this.status);
