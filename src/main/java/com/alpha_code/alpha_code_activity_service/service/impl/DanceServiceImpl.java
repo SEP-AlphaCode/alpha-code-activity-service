@@ -123,10 +123,6 @@ public class DanceServiceImpl implements DanceService {
         if (existed.isPresent()) {
             throw new ResourceNotFoundException("Dance code already exists");
         }
-        existed = repository.getDanceByNameIgnoreCaseAndStatusNot(dto.getName(), 0);
-        if (existed.isPresent()) {
-            throw new ResourceNotFoundException("Dance name already exists");
-        }
 
         var dance = DanceMapper.toEntity(dto);
         dance.setCreatedDate(LocalDateTime.now());
@@ -146,10 +142,6 @@ public class DanceServiceImpl implements DanceService {
         var valid = repository.getDanceByCodeIgnoreCaseAndStatusNot(dto.getCode(), 0);
         if (valid.isPresent() && valid.get().getId() != id) {
             throw new ResourceNotFoundException("Dance code already exists");
-        }
-        valid = repository.getDanceByNameIgnoreCaseAndStatusNot(dto.getName(), 0);
-        if (valid.isPresent() && valid.get().getId() != id) {
-            throw new ResourceNotFoundException("Dance name already exists");
         }
 
         existed.setName(dto.getName());
@@ -176,10 +168,6 @@ public class DanceServiceImpl implements DanceService {
         var valid = repository.getDanceByCodeIgnoreCaseAndStatusNot(dto.getCode(), 0);
         if (valid.isPresent() && valid.get().getId() != id) {
             throw new ResourceNotFoundException("Dance code already exists");
-        }
-        valid = repository.getDanceByNameIgnoreCaseAndStatusNot(dto.getName(), 0);
-        if (valid.isPresent() && valid.get().getId() != id) {
-            throw new ResourceNotFoundException("Dance name already exists");
         }
 
         if (dto.getName() != null){
