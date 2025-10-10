@@ -81,16 +81,16 @@ public class OsmoCardServiceImpl implements OsmoCardService {
         entity.setStatus(dto.getStatus());
         entity.setLastUpdated(LocalDateTime.now());
         entity.setCreatedDate(LocalDateTime.now());
-        if (entity.getActionId() != null) {
-            entity.setActionId(entity.getActionId());
-        } else if (entity.getDanceId() != null) {
-            entity.setDanceId(entity.getDanceId());
-        } else if (entity.getExpressionId() != null) {
-            entity.setExpressionId(entity.getExpressionId());
-        } else if (entity.getSkillId() != null) {
-            entity.setSkillId(entity.getSkillId());
-        } else if (entity.getExtendedActionId() != null) {
-            entity.setExtendedActionId(entity.getExtendedActionId());
+        if (dto.getActionId() != null) {
+            entity.setActionId(dto.getActionId());
+        } else if (dto.getDanceId() != null) {
+            entity.setDanceId(dto.getDanceId());
+        } else if (dto.getExpressionId() != null) {
+            entity.setExpressionId(dto.getExpressionId());
+        } else if (dto.getSkillId() != null) {
+            entity.setSkillId(dto.getSkillId());
+        } else if (dto.getExtendedActionId() != null) {
+            entity.setExtendedActionId(dto.getExtendedActionId());
         }
 
 
