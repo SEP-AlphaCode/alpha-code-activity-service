@@ -60,8 +60,24 @@ public class QrCode {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @Column(name = "activity_id", nullable = false)
+    @Column(name = "activity_id")
     private UUID activityId;
+
+    // Các ID chỉ để đọc (không ghi đè, không insert/update)
+    @Column(name = "action_id")
+    private UUID actionId;
+
+    @Column(name = "expression_id")
+    private UUID expressionId;
+
+    @Column(name = "dance_id")
+    private UUID danceId;
+
+    @Column(name = "skill_id")
+    private UUID skillId;
+
+    @Column(name = "extended_action_id")
+    private UUID extendedActionId;
 
     //Relationship
     @ManyToOne(fetch = FetchType.LAZY)
