@@ -47,19 +47,19 @@ public class OsmoCard {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @Column(name = "action_id", insertable = false, updatable = false)
+    @Column(name = "action_id")
     private UUID actionId;
 
-    @Column(name = "expression_id", insertable = false, updatable = false)
+    @Column(name = "expression_id")
     private UUID expressionId;
 
-    @Column(name = "dance_id", insertable = false, updatable = false)
+    @Column(name = "dance_id")
     private UUID danceId;
 
-    @Column(name = "skill_id", insertable = false, updatable = false)
+    @Column(name = "skill_id")
     private UUID skillId;
 
-    @Column(name = "extended_action_id", insertable = false, updatable = false)
+    @Column(name = "extended_action_id")
     private UUID extendedActionId;
 
     //Relationship

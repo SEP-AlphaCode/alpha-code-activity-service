@@ -36,7 +36,6 @@ public class OsmoCardMapper {
             dto.setSkillName(osmoCard.getSkill().getName());
             dto.setSkillCode(osmoCard.getSkill().getCode());
         }
-
         dto.setExtendedActionId(osmoCard.getExtendedActionId());
         if (osmoCard.getExtendedAction() != null) {
             dto.setExtendedActionName(osmoCard.getExtendedAction().getName());
