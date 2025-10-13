@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -70,13 +71,27 @@ public class OsmoCardServiceImpl implements OsmoCardService {
             count++;
         }
         if (count > 1) {
-            throw new IllegalArgumentException("Osmo Card cannot have more than one of Action ID, Dance ID, or Expression ID set");
+            throw new IllegalArgumentException("Osmo card chỉ được lưu với 1 loại hành động");
         }
         if (count == 0) {
-            throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, Expression ID, Skill ID, or Extended Action ID set");
+            throw new IllegalArgumentException("Osmo Card phải tồn tại 1 loại hành động");
         }
 
-        entity.setColor(dto.getColor());
+        if (dto.getColor() == null) {
+            throw new IllegalArgumentException("Osmo Card phải tồn tại màu");
+        } else if (dto.getColor().equalsIgnoreCase("yellow")) {
+            throw new IllegalArgumentException("Màu vàng không hợp lệ");
+        } else  if (dto.getColor().equalsIgnoreCase("gray")) {
+            throw new IllegalArgumentException("Màu xám không hợp lệ");
+        }
+
+        var existing = repository.findOsmoCardByColorAndStatusNot(dto.getColor(), 0);
+
+        if (existing != null) {
+            throw new IllegalArgumentException("Osmo Card màu " + dto.getColor() + " đã tồn tại");
+        }
+
+        entity.setColor(dto.getColor().toLowerCase());
         entity.setName(dto.getName());
         entity.setStatus(dto.getStatus());
         entity.setLastUpdated(LocalDateTime.now());
@@ -126,11 +141,26 @@ public class OsmoCardServiceImpl implements OsmoCardService {
             throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, Expression ID, Skill ID, or Extended Action ID set");
         }
 
+        if (dto.getColor() == null) {
+            throw new IllegalArgumentException("Osmo Card phải tồn tại màu");
+        } else if (dto.getColor().equalsIgnoreCase("yellow")) {
+            throw new IllegalArgumentException("Màu vàng không hợp lệ");
+        } else  if (dto.getColor().equalsIgnoreCase("gray")) {
+            throw new IllegalArgumentException("Màu xám không hợp lệ");
+        }
+
+        var valid = repository.findOsmoCardByColorAndStatusNot(dto.getColor(), 0);
+
+        if (valid != null) {
+            throw new IllegalArgumentException("Osmo Card màu " + dto.getColor() + " đã tồn tại");
+        }
+
+
         var existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("OsmoCard not found"));
 
         existing.setName(dto.getName());
-        existing.setColor(dto.getColor());
+        existing.setColor(dto.getColor().toLowerCase());
         existing.setStatus(dto.getStatus());
         existing.setLastUpdated(LocalDateTime.now());
 
@@ -201,6 +231,20 @@ public class OsmoCardServiceImpl implements OsmoCardService {
         if (count == 0) {
             throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, Expression ID, Skill ID, or Extended Action ID set");
         }
+        if (dto.getColor() == null) {
+            throw new IllegalArgumentException("Osmo Card phải tồn tại màu");
+        } else if (dto.getColor().equalsIgnoreCase("yellow")) {
+            throw new IllegalArgumentException("Màu vàng không hợp lệ");
+        } else  if (dto.getColor().equalsIgnoreCase("gray")) {
+            throw new IllegalArgumentException("Màu xám không hợp lệ");
+        }
+
+        var valid = repository.findOsmoCardByColorAndStatusNot(dto.getColor(), 0);
+
+        if (valid != null) {
+            throw new IllegalArgumentException("Osmo Card màu " + dto.getColor() + " đã tồn tại");
+        }
+
 
         var existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("OsmoCard not found"));
@@ -209,7 +253,7 @@ public class OsmoCardServiceImpl implements OsmoCardService {
             existing.setName(dto.getName());
         }
         if (dto.getColor() != null) {
-            existing.setColor(dto.getColor());
+            existing.setColor(dto.getColor().toLowerCase());
         }
         if (dto.getStatus() != null) {
             existing.setStatus(dto.getStatus());
