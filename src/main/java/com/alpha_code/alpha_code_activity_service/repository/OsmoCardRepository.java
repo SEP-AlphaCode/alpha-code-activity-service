@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface OsmoCardRepository extends JpaRepository<OsmoCard, UUID> {
     Page<OsmoCard> findAllByStatus(Integer status, Pageable pageable);
+
+    OsmoCard findOsmoCardByColorAndStatusNot(String color, Integer status);
 }
