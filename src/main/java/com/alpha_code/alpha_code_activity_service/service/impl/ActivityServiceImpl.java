@@ -30,11 +30,11 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Cacheable(value = "activities_list", key = "{#page, #size, #keyword, #accountId, #status}")
-    public PagedResult<ActivityDto> getAll(int page, int size, String keyword, UUID accountId, Integer status) {
+    public PagedResult<ActivityDto> getAll(int page, int size, String keyword, UUID accountId, UUID modelId, Integer status) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Activity> pageResult;
 
-        pageResult = repository.searchActivities(keyword, accountId, status, pageable);
+        pageResult = repository.searchActivities(keyword, accountId, modelId, status, pageable);
 
         return new PagedResult<>(pageResult.map(ActivityMapper::toDto));
     }
@@ -49,18 +49,18 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Cacheable(value = "activities_list", key = "#accountId")
-    public PagedResult<ActivityDto> getByAccountId(UUID accountId, int page, int size) {
+    public PagedResult<ActivityDto> getByAccountId(UUID accountId, UUID modelId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Activity> pageResult;
-        pageResult = repository.findAllByAccountIdAndStatusNot(accountId, 0, pageable);
+        pageResult = repository.findAllByAccountIdAndRobotModelIdAndStatusNot(accountId, modelId, 0, pageable);
 
         return  new PagedResult<>(pageResult.map(ActivityMapper::toDto));
     }
 
     @Override
     @Cacheable(value = "activities_list", key = "#type")
-    public List<ActivityDto> getByType(String type) {
-        return repository.findAllByTypeIgnoreCaseAndStatusNot(type, 0)
+    public List<ActivityDto> getByType(String type, UUID modelId) {
+        return repository.findAllByTypeIgnoreCaseAndRobotModelIdAndStatusNot(type, modelId, 0)
                 .stream().map(ActivityMapper::toDto).toList();
     }
 
@@ -69,7 +69,7 @@ public class ActivityServiceImpl implements ActivityService {
     @CacheEvict(value = "activities_list", allEntries = true)
     public ActivityDto createActivity(ActivityDto dto) {
 
-        var existed = repository.findByNameIgnoreCaseAndStatusNot(dto.getName(), 0);
+        var existed = repository.findByNameIgnoreCaseAndRobotModelIdAndStatusNot(dto.getName(), dto.getRobotModelId(),0);
 
         if(existed.isPresent()){
             throw new ConflictException("Activity already exists with name: " + dto.getName());
@@ -90,7 +90,7 @@ public class ActivityServiceImpl implements ActivityService {
         var activity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Activity not found"));
 
-        var existed = repository.findByNameIgnoreCaseAndStatusNot(dto.getName(), 0);
+        var existed = repository.findByNameIgnoreCaseAndRobotModelIdAndStatusNot(dto.getName(), dto.getRobotModelId(),0);
         if (existed.isPresent() && existed.get().getId() != activity.getId()) {
             throw new RuntimeException("Activity already exists with name: " + dto.getName());
         }
@@ -115,7 +115,7 @@ public class ActivityServiceImpl implements ActivityService {
         var activity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Activity not found"));
 
-        var existed = repository.findByNameIgnoreCaseAndStatusNot(dto.getName(), 0);
+        var existed = repository.findByNameIgnoreCaseAndRobotModelIdAndStatusNot(dto.getName(), dto.getRobotModelId(),0);
         if (existed.isPresent() && existed.get().getId() != activity.getId()) {
             throw new RuntimeException("Activity already exists with name: " + dto.getName());
         }

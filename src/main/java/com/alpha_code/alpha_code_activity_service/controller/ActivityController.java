@@ -27,8 +27,9 @@ public class ActivityController {
                                            @RequestParam(value = "size", defaultValue = "10") int size,
                                            @RequestParam(value = "keyword", required = false) String keyword,
                                            @RequestParam(value = "accountId", required = false ) UUID accountId,
+                                           @RequestParam(value = "modelId", required = false) UUID modelId,
                                            @RequestParam(value = "status", required = false) Integer status){
-        return service.getAll(page, size, keyword, accountId, status);
+        return service.getAll(page, size, keyword, accountId, modelId, status);
     }
 
     @GetMapping("/{id}")
@@ -39,16 +40,16 @@ public class ActivityController {
 
     @GetMapping("/account")
     @Operation(summary = "Get activities by account id")
-    public PagedResult<ActivityDto> getByAccountId(@RequestParam UUID accountId,
+    public PagedResult<ActivityDto> getByAccountId(@RequestParam UUID accountId,@RequestParam UUID modelId,
                                                    @RequestParam(value = "page", defaultValue = "1") int page,
                                                    @RequestParam(value = "size", defaultValue = "10") int size){
-        return service.getByAccountId(accountId, page, size);
+        return service.getByAccountId(accountId, modelId, page, size);
     }
 
-    @GetMapping("/type/{type}")
+    @GetMapping("/type")
     @Operation(summary = "Get activities by type")
-    public List<ActivityDto> getByType(@PathVariable String type){
-        return service.getByType(type);
+    public List<ActivityDto> getByType(@RequestParam String type, @RequestParam UUID modelId){
+        return service.getByType(type, modelId);
     }
 
     @PostMapping

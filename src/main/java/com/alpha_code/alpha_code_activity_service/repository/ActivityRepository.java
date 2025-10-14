@@ -21,19 +21,22 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
         WHERE (:keyword IS NULL OR :keyword = '' OR LOWER(a.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
                OR LOWER(a.type) LIKE LOWER(CONCAT('%', :keyword, '%')))
           AND (:accountId IS NULL OR a.accountId = :accountId)
+          AND (:modelId IS NULL OR a.robotModelId = :modelId)
           AND (:status IS NULL OR a.status = :status)
           AND (a.status <> 0)
     """)
     Page<Activity> searchActivities(
             @Param("keyword") String keyword,
             @Param("accountId") UUID accountId,
+            @Param("modelId") UUID modelId,
             @Param("status") Integer status,
             Pageable pageable
     );
 
-    Optional<Activity> findByNameIgnoreCaseAndStatusNot(String name, Integer status);
+    Optional<Activity> findByNameIgnoreCaseAndRobotModelIdAndStatusNot(String name, UUID robotModelId, Integer status);
 
-    List<Activity> findAllByTypeIgnoreCaseAndStatusNot(String type, Integer status);
+    List<Activity> findAllByTypeIgnoreCaseAndRobotModelIdAndStatusNot(String type,  UUID robotModelId, Integer status);
 
-    Page<Activity> findAllByAccountIdAndStatusNot(UUID accountId, Integer status, Pageable pageable);
+
+    Page<Activity> findAllByAccountIdAndRobotModelIdAndStatusNot(UUID accountId, UUID robotModelId, Integer status, Pageable pageable);
 }

@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ActivityService {
-    PagedResult<ActivityDto> getAll(int page, int size, String keyword, UUID accountId, Integer status);
+    PagedResult<ActivityDto> getAll(int page, int size, String keyword, UUID accountId, UUID modelId, Integer status);
 
     ActivityDto getActivityById(UUID id);
 
-    PagedResult<ActivityDto> getByAccountId(UUID accountId, int page, int size);
+    PagedResult<ActivityDto> getByAccountId(UUID accountId, UUID modelId, int page, int size);
 
-    List<ActivityDto> getByType(String type);
+    List<ActivityDto> getByType(String type, UUID modelId);
 
     ActivityDto createActivity(ActivityDto dto);
 
