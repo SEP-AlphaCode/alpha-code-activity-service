@@ -29,7 +29,7 @@ public class ActivityServiceImpl implements ActivityService {
     private final ActivityRepository repository;
 
     @Override
-    @Cacheable(value = "activities_list", key = "{#page, #size, #keyword, #accountId, #status}")
+    @Cacheable(value = "activities_list", key = "{#page, #size, #keyword, #accountId, #modelId, #status}")
     public PagedResult<ActivityDto> getAll(int page, int size, String keyword, UUID accountId, UUID modelId, Integer status) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Activity> pageResult;
