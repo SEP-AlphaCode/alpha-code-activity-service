@@ -48,7 +48,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    @Cacheable(value = "activities_list", key = "#accountId")
+    @Cacheable(value = "activities_list", key = "{#accountId, #modelId, #page, #size}")
     public PagedResult<ActivityDto> getByAccountId(UUID accountId, UUID modelId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Activity> pageResult;
@@ -58,7 +58,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    @Cacheable(value = "activities_list", key = "#type")
+    @Cacheable(value = "activities_list", key = "{#type, #modelId}")
     public List<ActivityDto> getByType(String type, UUID modelId) {
         return repository.findAllByTypeIgnoreCaseAndRobotModelIdAndStatusNot(type, modelId, 0)
                 .stream().map(ActivityMapper::toDto).toList();
