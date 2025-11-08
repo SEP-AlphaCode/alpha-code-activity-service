@@ -48,7 +48,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    @Cacheable(value = "activities_list", key = "{#accountId, #modelId, #page, #size}")
+    @Cacheable(value = "account_activities_list", key = "{#accountId, #modelId, #page, #size}")
     public PagedResult<ActivityDto> getByAccountId(UUID accountId, UUID modelId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Activity> pageResult;
@@ -66,7 +66,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "activities_list", allEntries = true)
+    @CacheEvict(value = {"activities_list", "account_activities_list"}, allEntries = true)
     public ActivityDto createActivity(ActivityDto dto) {
 
         var existed = repository.findByNameIgnoreCaseAndRobotModelIdAndStatusNot(dto.getName(), dto.getRobotModelId(),0);
@@ -84,7 +84,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "activities_list", allEntries = true)
+    @CacheEvict(value = {"activities_list", "account_activities_list"}, allEntries = true)
     @CachePut(value = "activities", key = "#id")
     public ActivityDto updateActivity(UUID id, ActivityDto dto) {
         var activity = repository.findById(id)
@@ -109,7 +109,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "activities_list", allEntries = true)
+    @CacheEvict(value = {"activities_list", "account_activities_list"}, allEntries = true)
     @CachePut(value = "activities", key = "#id")
     public ActivityDto patchUpdateActivity(UUID id, ActivityDto dto) {
         var activity = repository.findById(id)
@@ -148,7 +148,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "activities_list", allEntries = true)
+    @CacheEvict(value = {"activities_list", "account_activities_list"}, allEntries = true)
     @CachePut(value = "activities", key = "#id")
     public ActivityDto changeActivityStatus(UUID id, Integer status) {
         var activity = repository.findById(id)
@@ -163,7 +163,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"activities_list", "activities"}, allEntries = true)
+    @CacheEvict(value = {"activities_list", "activities", "account_activities_list"}, allEntries = true)
     public String deleteActivity(UUID id) {
         var activity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Activity not found"));
