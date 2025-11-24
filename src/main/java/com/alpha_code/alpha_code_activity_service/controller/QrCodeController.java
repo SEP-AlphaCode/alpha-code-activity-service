@@ -29,8 +29,9 @@ public class QrCodeController {
     @Operation(summary = "Get all Qr codes with pagination and optional status filter")
     public PagedResult<QrCodeDto> getAll(@RequestParam(value = "page", defaultValue = "1") int page,
                                          @RequestParam(value = "size", defaultValue = "10") int size,
-                                         @RequestParam(value = "status", required = false) Integer status) {
-        return service.getAll(page, size, status);
+                                         @RequestParam(value = "status", required = false) Integer status,
+                                         @RequestParam(value = "accountId") UUID accountId ){
+        return service.getAll(page, size, status, accountId);
     }
 
     @GetMapping("/{id}")
