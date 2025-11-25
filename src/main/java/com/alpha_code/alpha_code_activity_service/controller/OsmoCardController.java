@@ -37,28 +37,28 @@ public class OsmoCardController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Create new osmo card")
     public OsmoCardDto create(@Validated(OnCreate.class) @RequestBody OsmoCardDto dto) {
         return service.create(dto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Update osmo card by id")
     public OsmoCardDto update(@PathVariable UUID id, @Validated(OnUpdate.class) @RequestBody OsmoCardDto dto) {
         return service.update(id, dto);
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Patch update osmo card by id")
     public OsmoCardDto patchUpdate(@PathVariable UUID id, @Validated(OnUpdate.class) @RequestBody OsmoCardDto dto) {
         return service.patchUpdate(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Delete osmo card by id")
     public String delete(@PathVariable UUID id) {
         return service.delete(id);
