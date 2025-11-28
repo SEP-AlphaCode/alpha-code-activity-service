@@ -24,6 +24,7 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
           AND (:modelId IS NULL OR a.robotModelId = :modelId)
           AND (:status IS NULL OR a.status = :status)
           AND (a.status <> 0)
+        order by a.createdDate DESC
     """)
     Page<Activity> searchActivities(
             @Param("keyword") String keyword,
