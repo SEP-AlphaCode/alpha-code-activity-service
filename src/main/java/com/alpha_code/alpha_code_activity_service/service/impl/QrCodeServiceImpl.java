@@ -51,15 +51,15 @@ public class QrCodeServiceImpl implements QrCodeService {
     private final ObjectMapper objectMapper;
 
     @Override
-    @Cacheable(value = "qr_codes_list", key = "{#page, #size, #status}")
-    public PagedResult<QrCodeDto> getAll(int page, int size, Integer status) {
+    @Cacheable(value = "qr_codes_list", key = "{#page, #size, #status, #accountId}")
+    public PagedResult<QrCodeDto> getAll(int page, int size, Integer status, UUID accountId) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<QrCode> pageResult;
 
         if (status != null) {
-            pageResult = repository.findAllByStatus(status, pageable);
+            pageResult = repository.findAllByStatusAndAccountId(status, accountId, pageable);
         } else {
-            pageResult = repository.findAll(pageable);
+            pageResult = repository.findAllByAccountId(accountId, pageable);
         }
         return new PagedResult<>(pageResult.map(QrCodeMapper::toDto));
     }

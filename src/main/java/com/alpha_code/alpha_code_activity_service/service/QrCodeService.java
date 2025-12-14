@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 public interface QrCodeService {
-    PagedResult<QrCodeDto> getAll(int page, int size, Integer status);
+    PagedResult<QrCodeDto> getAll(int page, int size, Integer status, UUID accountId);
 
     QrCodeDto getById(UUID id);
 

@@ -29,8 +29,9 @@ public class QrCodeController {
     @Operation(summary = "Get all Qr codes with pagination and optional status filter")
     public PagedResult<QrCodeDto> getAll(@RequestParam(value = "page", defaultValue = "1") int page,
                                          @RequestParam(value = "size", defaultValue = "10") int size,
-                                         @RequestParam(value = "status", required = false) Integer status) {
-        return service.getAll(page, size, status);
+                                         @RequestParam(value = "status", required = false) Integer status,
+                                         @RequestParam(value = "accountId") UUID accountId ){
+        return service.getAll(page, size, status, accountId);
     }
 
     @GetMapping("/{id}")
@@ -52,7 +53,7 @@ public class QrCodeController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Create new Qr code")
     public QrCodeDto create(@Validated(OnCreate.class) @RequestBody QrCodeDto requestDto) {
 //        QrCodeDto QrCodeDto = new QrCodeDto();
@@ -67,42 +68,42 @@ public class QrCodeController {
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Update QrCode")
     public QrCodeDto update(@PathVariable UUID id, @Validated(OnCreate.class) @RequestBody QrCodeDto QrCodeDto) throws JsonProcessingException {
         return service.update(id, QrCodeDto);
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Patch update QrCode")
     public QrCodeDto patchUpdate(@PathVariable UUID id, @Validated(OnUpdate.class) @RequestBody QrCodeDto QrCodeDto) {
         return service.patchUpdate(id, QrCodeDto);
     }
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Update QrCode status")
     public QrCodeDto updateStatus(@PathVariable UUID id, @Validated(OnUpdate.class) @RequestParam Integer status) {
         return service.changeStatus(id, status);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Delete QrCode by id")
     public String delete(@PathVariable UUID id) {
         return service.delete(id);
     }
 
     @PutMapping("/{id}/disable")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Disable QrCode by id")
     public String disable(@PathVariable UUID id) {
         return service.disable(id);
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Teacher')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Admin', 'ROLE_Parent', 'ROLE_Children')")
     @Operation(summary = "Change QrCode status")
     public QrCodeDto changeStatus(@PathVariable UUID id, @RequestParam Integer status) {
         return service.changeStatus(id, status);

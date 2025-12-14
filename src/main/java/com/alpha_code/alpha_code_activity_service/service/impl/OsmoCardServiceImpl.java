@@ -226,10 +226,10 @@ public class OsmoCardServiceImpl implements OsmoCardService {
             count++;
         }
         if (count > 1) {
-            throw new IllegalArgumentException("Osmo Card cannot have more than one of Action ID, Dance ID, or Expression ID set");
+            throw new IllegalArgumentException("Osmo Card phải không được có nhiều hơn một trong các ID Hành động, Nhảy múa, Biểu cảm, Kỹ năng hoặc Hành động mở rộng được đặt");
         }
         if (count == 0) {
-            throw new IllegalArgumentException("Osmo Card must have at least one of Action ID, Dance ID, Expression ID, Skill ID, or Extended Action ID set");
+            throw new IllegalArgumentException("Osmo Card phải có ít nhất một trong các ID Hành động, Nhảy múa, Biểu cảm, Kỹ năng hoặc Hành động mở rộng được đặt");
         }
         if (dto.getColor() == null) {
             throw new IllegalArgumentException("Osmo Card phải tồn tại màu");
@@ -241,7 +241,7 @@ public class OsmoCardServiceImpl implements OsmoCardService {
 
         var valid = repository.findOsmoCardByColorAndStatusNot(dto.getColor(), 0);
 
-        if (valid != null) {
+        if (valid != null && !valid.getId().equals(id)) {
             throw new IllegalArgumentException("Osmo Card màu " + dto.getColor() + " đã tồn tại");
         }
 
