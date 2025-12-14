@@ -151,6 +151,7 @@ public class ActionServiceImpl implements ActionService {
         existingAction.setCanInterrupt(actionDto.getCanInterrupt());
         existingAction.setRobotModelId(actionDto.getRobotModelId());
         existingAction.setIcon(actionDto.getIcon());
+        existingAction.setType(actionDto.getType());
         existingAction.setLastUpdated(LocalDateTime.now());
 
         Action updatedAction = actionRepository.save(existingAction);
@@ -185,6 +186,9 @@ public class ActionServiceImpl implements ActionService {
         }
         if (actionDto.getIcon() != null) {
             existingAction.setIcon(actionDto.getIcon());
+        }
+        if( actionDto.getType() != null) {
+            existingAction.setType(actionDto.getType());
         }
         existingAction.setLastUpdated(LocalDateTime.now());
 

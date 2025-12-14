@@ -147,6 +147,7 @@ public class DanceServiceImpl implements DanceService {
         existed.setName(dto.getName());
         existed.setDuration(dto.getDuration());
         existed.setDescription(dto.getDescription());
+        existed.setType(dto.getType());
         existed.setCode(dto.getCode());
         existed.setIcon(dto.getIcon());
         existed.setStatus(dto.getStatus());
@@ -189,6 +190,10 @@ public class DanceServiceImpl implements DanceService {
 
         if (dto.getStatus() != null){
             existed.setStatus(dto.getStatus());
+        }
+
+        if(dto.getType() != null){
+            existed.setType(dto.getType());
         }
 
         existed.setLastUpdated(LocalDateTime.now());

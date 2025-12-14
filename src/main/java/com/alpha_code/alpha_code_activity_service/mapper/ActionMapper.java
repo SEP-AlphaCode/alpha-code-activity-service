@@ -13,6 +13,7 @@ public class ActionMapper {
 
         ActionDto actionDto = new ActionDto();
         actionDto.setId(action.getId());
+        actionDto.setType(action.getType());
         actionDto.setCreatedDate(action.getCreatedDate());
         actionDto.setLastUpdated(action.getLastUpdated());
         actionDto.setName(action.getName());
@@ -43,6 +44,7 @@ public class ActionMapper {
         action.setStatus(dto.getStatus());
         action.setCanInterrupt(dto.getCanInterrupt());
         action.setIcon(dto.getIcon());
+        action.setType(dto.getType());
         action.setRobotModelId(dto.getRobotModelId());
         return action;
     }
