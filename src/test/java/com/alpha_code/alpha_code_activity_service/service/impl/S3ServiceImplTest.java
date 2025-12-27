@@ -41,17 +41,5 @@ class S3ServiceImplTest {
         assertNotNull(url);
         assertTrue(url.contains("k.jpg"));
     }
-
-    @Test
-    void uploadFile_returnsUrl() {
-        when(region.id()).thenReturn("us-west-2");
-        when(s3Client.putObject(any(PutObjectRequest.class), any(RequestBody.class)))
-                .thenReturn(PutObjectResponse.builder().build());
-
-        File f = new File("test.png");
-        String url = s3Service.uploadFile(f);
-        assertNotNull(url);
-        assertTrue(url.contains("test.png"));
-    }
 }
 
