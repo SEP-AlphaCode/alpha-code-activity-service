@@ -1,6 +1,7 @@
 package com.alpha_code.alpha_code_activity_service.dto;
 
 import com.alpha_code.alpha_code_activity_service.enums.ActionEnum;
+import com.alpha_code.alpha_code_activity_service.enums.TypeEnum;
 import com.alpha_code.alpha_code_activity_service.validation.OnCreate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -56,9 +57,17 @@ public class ActionDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String robotModelName;
 
+    @NotNull(message = "Type is required", groups = {OnCreate.class})
+    private Integer type;
+
     @JsonProperty(value = "statusText", access = JsonProperty.Access.READ_ONLY)
     public String getStatusText() {
         return ActionEnum.fromCode(this.status);
+    }
+
+    @JsonProperty(value = "typeText", access = JsonProperty.Access.READ_ONLY)
+    public String getTypeText() {
+        return TypeEnum.fromCode(this.status);
     }
 
 }

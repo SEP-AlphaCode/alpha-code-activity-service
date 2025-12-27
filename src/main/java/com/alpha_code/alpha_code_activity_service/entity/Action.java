@@ -68,6 +68,10 @@ public class Action {
     @Column(name = "icon", nullable = false)
     private String icon;
 
+    @NotNull
+    @Column(name = "type")
+    private Integer type;
+
     //Relationship
     @OneToMany(mappedBy = "action", fetch = FetchType.LAZY)
     private List<OsmoCard> osmoCards;
